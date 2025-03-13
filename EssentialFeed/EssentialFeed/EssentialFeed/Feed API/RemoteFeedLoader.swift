@@ -38,8 +38,12 @@ public final class RemoteFeedLoader {
     public func load(commpletion: @escaping (Result) -> Void) {
         client.get(from: url) { result in
             switch result {
-            case .success:
-                commpletion(.failure(.invalidData))
+            case let .success(data, _):
+                if let _ = try? JSONSerialization.jsonObject(with: data) {
+                    commpletion(.success([]))
+                } else {
+                    commpletion(.failure(.invalidData))
+                }
             case .failure:
                 commpletion(.failure(.connectivity))
             }
