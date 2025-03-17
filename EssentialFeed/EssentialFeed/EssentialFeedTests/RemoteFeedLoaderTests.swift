@@ -157,7 +157,7 @@ final class RemoteFeedLoaderTests: XCTestCase {
         track_for_memoryLeacks(clientSpy, file: file, line: line)
 
         
-        return (sut, clientSpy)k
+        return (sut, clientSpy)
     }
     
     private func track_for_memoryLeacks(_ ins: AnyObject,
