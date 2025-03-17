@@ -4,7 +4,7 @@
 //  Created by Mykola Dementiev
 //
 
-internal final class FeedItemMapper {
+internal final class FeedItemsMapper {
     private static var OK_200 = 200
     
     internal static func map(_ data: Data,
