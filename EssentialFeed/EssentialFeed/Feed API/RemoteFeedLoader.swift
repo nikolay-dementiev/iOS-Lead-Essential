@@ -18,7 +18,7 @@ public final class RemoteFeedLoader: FeedLoader {
     }
     
     public init(url: URL,
-         client: HTTPClient) {
+                client: HTTPClient) {
         self.client = client
         self.url = url
     }
@@ -36,4 +36,3 @@ public final class RemoteFeedLoader: FeedLoader {
         }
     }
 }
-
