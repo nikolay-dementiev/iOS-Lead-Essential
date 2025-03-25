@@ -22,7 +22,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
     }
     
     func test_getFromURL_performGetRequestWithURL() {
-        let url = anyUrl()
+        let url = anyURL()
         
         let exp = expectation(description: "Wait for request")
         URLProtocolStub.observeRequests { request in
@@ -122,7 +122,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
         
         var receivedResult: HTTPClientResult!
         let exp = expectation(description: "Wait for completion")
-        sut.get(from: anyUrl()) { result in
+        sut.get(from: anyURL()) { result in
             receivedResult = result
             
             exp.fulfill()
@@ -134,7 +134,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
     }
         
     
-    private func anyUrl() -> URL {
+    private func anyURL() -> URL {
         return URL(string: "https://any-url.com")!
     }
     
@@ -147,11 +147,11 @@ final class URLSessionHTTPClientTests: XCTestCase {
     }
     
     private func anyNonHTTPURLResponse() -> URLResponse {
-        URLResponse(url: anyUrl(), mimeType: nil, expectedContentLength: 0, textEncodingName: nil)
+        URLResponse(url: anyURL(), mimeType: nil, expectedContentLength: 0, textEncodingName: nil)
     }
     
     private func anyHTTPURLResponse() -> HTTPURLResponse {
-        HTTPURLResponse(url: anyUrl(), statusCode: 200, httpVersion: nil, headerFields: nil)!
+        HTTPURLResponse(url: anyURL(), statusCode: 200, httpVersion: nil, headerFields: nil)!
     }
     
     private func makeSUT(file: StaticString = #filePath,
