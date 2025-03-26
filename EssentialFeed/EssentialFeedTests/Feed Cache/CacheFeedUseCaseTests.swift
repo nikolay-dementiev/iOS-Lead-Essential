@@ -19,15 +19,16 @@ class LocalFeedLoader {
     func save(_ items: [FeedItem], completion: @escaping (Error?) -> Void) {
         store.deleteCacheFeed { [weak self] error in
             guard let self else { return }
-            if error == nil {
+            
+            if let cacheDeletionError = error {
+                completion(cacheDeletionError)
+            } else {
                 self.store.insert(items,
                                   timeStamp: self.currentDate()) { [weak self] error in
                     guard self != nil else { return }
                     
                     completion(error)
                 }
-            } else {
-                completion(error)
             }
         }
     }
@@ -167,7 +168,7 @@ final class CacheFeedUseCaseTests: XCTestCase {
         
         XCTAssertEqual(expectedError, receivedError as? NSError, file: file, line: line)
     }
-
+    
     
     private func uniqueItem() -> FeedItem {
         return FeedItem(id: UUID(),
