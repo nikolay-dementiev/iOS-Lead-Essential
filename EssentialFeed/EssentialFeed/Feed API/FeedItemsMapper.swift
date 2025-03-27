@@ -4,13 +4,6 @@
 //  Created by Mykola Dementiev
 //
 
-internal struct RemoteFeedItem: Decodable {
-    internal let id: UUID
-    internal let description: String?
-    internal let location: String?
-    internal let image: URL
-}
-
 internal final class FeedItemsMapper {
     private static var OK_200 = 200
     
