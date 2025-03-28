@@ -8,7 +8,7 @@ public struct LocalFeedImage: Equatable {
     public let id: UUID
     public let description: String?
     public let location: String?
-    public let image: URL
+    public let url: URL
     
     public init(id: UUID,
                 description: String? = nil,
@@ -17,6 +17,6 @@ public struct LocalFeedImage: Equatable {
         self.id = id
         self.description = description
         self.location = location
-        self.image = url
+        self.url = url
     }
 }
