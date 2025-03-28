@@ -25,7 +25,7 @@ final class CacheFeedUseCaseTests: XCTestCase {
     func test_save_doesNotRequestCacheInsertionOnDeletionError() {
         let (sut, store) = makeSUT()
         sut.save(uniqueImageFeed().models) { _ in }
-        let deletetionError = anyNsError()
+        let deletetionError = anyNSError()
         store.completeDeletion(with: deletetionError)
         
         XCTAssertEqual(store.receivedMessages, [.deleteCachedFeed])
@@ -44,7 +44,7 @@ final class CacheFeedUseCaseTests: XCTestCase {
     
     func test_save_failsOnDeletionError() {
         let (sut, store) = makeSUT()
-        let deletetionError = anyNsError()
+        let deletetionError = anyNSError()
         expect(sut, toCompleteWithError: deletetionError) {
             store.completeDeletion(with: deletetionError)
         }
@@ -52,7 +52,7 @@ final class CacheFeedUseCaseTests: XCTestCase {
     
     func test_save_failsOnInsertionError() {
         let (sut, store) = makeSUT()
-        let insertionError = anyNsError()
+        let insertionError = anyNSError()
         
         expect(sut, toCompleteWithError: insertionError) {
             store.completeDeletionSuccessfully()
@@ -79,7 +79,7 @@ final class CacheFeedUseCaseTests: XCTestCase {
         }
         
         sut = nil
-        store.completeDeletion(with: anyNsError())
+        store.completeDeletion(with: anyNSError())
         
         XCTAssertTrue(receivedResulrs.isEmpty)
     }
@@ -95,7 +95,7 @@ final class CacheFeedUseCaseTests: XCTestCase {
         
         store.completeDeletionSuccessfully()
         sut = nil
-        store.completeDeletion(with: anyNsError())
+        store.completeDeletion(with: anyNSError())
         
         XCTAssertTrue(receivedResulrs.isEmpty)
     }
@@ -155,7 +155,7 @@ final class CacheFeedUseCaseTests: XCTestCase {
         return URL(string: "https://any-url.com")!
     }
     
-    private func anyNsError() -> NSError {
+    private func anyNSError() -> NSError {
         NSError(domain: "Test", code: 0)
     }
 }
