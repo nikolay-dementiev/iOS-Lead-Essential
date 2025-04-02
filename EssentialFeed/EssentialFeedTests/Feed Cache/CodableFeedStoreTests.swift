@@ -7,7 +7,7 @@
 import XCTest
 import EssentialFeed
 
-class CodebleFeedStore {
+class CodableFeedStore {
     private struct Cache: Codable {
         let feed: [CodableFeedImage]
         let timestamp: Date
@@ -70,7 +70,7 @@ final class CodableFeedStoreTests: XCTestCase {
     }
     
     func test_retrive_deliveersEmptyOnEmptyCache() {
-        let sut = CodebleFeedStore()
+        let sut = makeSUT()
         let exp = expectation(description: "Retrieval should complete")
         sut.retrieve { result in
             switch result {
@@ -88,7 +88,7 @@ final class CodableFeedStoreTests: XCTestCase {
     
     
     func test_retrive_hasNoSideEffectsOnEmptyCache() {
-        let sut = CodebleFeedStore()
+        let sut = makeSUT()
         let exp = expectation(description: "Retrieval should complete")
         
         sut.retrieve { firstResult in
@@ -108,7 +108,7 @@ final class CodableFeedStoreTests: XCTestCase {
     }
     
     func test_retriveAfterINsertingtoEmptyCache_deliversInsertedValues() {
-        let sut = CodebleFeedStore()
+        let sut = makeSUT()
         let feed = uniqueImageFeed().local
         let timeStamp = Date()
         let exp = expectation(description: "Retrieval should complete")
@@ -131,4 +131,9 @@ final class CodableFeedStoreTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
 
+    // MARK: - Helpers
+    
+    private func makeSUT() -> CodableFeedStore {
+        return CodableFeedStore()
+    }
 }
