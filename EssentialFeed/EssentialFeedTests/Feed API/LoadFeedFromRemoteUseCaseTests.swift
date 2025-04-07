@@ -117,17 +117,17 @@ final class LoadFeedFromRemoteUseCaseTests: XCTestCase {
     private func makeItem(id: UUID,
                           description: String? = nil,
                           location: String? = nil,
-                          imageURL: URL) -> (model: FeedItem, json: [String: Any]) {
+                          imageURL: URL) -> (model: FeedImage, json: [String: Any]) {
         
-        let feedItem = FeedItem(id: id,
+        let feedItem = FeedImage(id: id,
                                 description: description,
                                 location: location,
-                                imageURL: imageURL)
+                                url: imageURL)
         let itemJson = [
             "id": feedItem.id.uuidString,
             "description": feedItem.description,
             "location": feedItem.location,
-            "image": feedItem.imageURL.absoluteString
+            "image": feedItem.url.absoluteString
         ].compactMapValues { $0 }
         
         return (feedItem, itemJson)
@@ -178,8 +178,8 @@ final class LoadFeedFromRemoteUseCaseTests: XCTestCase {
         let clientSpy = HTTPClientSpy()
         let sut = RemoteFeedLoader(url: url, client: clientSpy)
         
-        track_for_memoryLeacks(sut, file: file, line: line)
-        track_for_memoryLeacks(clientSpy, file: file, line: line)
+        trackForMemoryLeacks(sut, file: file, line: line)
+        trackForMemoryLeacks(clientSpy, file: file, line: line)
 
         
         return (sut, clientSpy)
