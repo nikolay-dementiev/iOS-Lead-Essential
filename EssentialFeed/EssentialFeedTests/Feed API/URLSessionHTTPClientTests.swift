@@ -22,7 +22,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
     }
     
     func test_getFromURL_performGetRequestWithURL() {
-        let url = anyUrl()
+        let url = anyURL()
         
         let exp = expectation(description: "Wait for request")
         URLProtocolStub.observeRequests { request in
@@ -38,7 +38,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
     }
     
     func test_getfromURL_failsOnRequestError() {
-        let requestError = anyNsError()
+        let requestError = anyNSError()
         let receivedError = resultErrorFor(data: nil, response: nil, error: requestError)
         
         XCTAssertEqual((receivedError as? NSError)?.code, requestError.code)
@@ -49,10 +49,10 @@ final class URLSessionHTTPClientTests: XCTestCase {
         XCTAssertNotNil(resultErrorFor(data: nil, response: nil, error: nil))
         XCTAssertNotNil(resultErrorFor(data: nil, response: anyNonHTTPURLResponse(), error: nil))
         XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: nil))
-        XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: anyNsError()))
-        XCTAssertNotNil(resultErrorFor(data: nil, response: anyNonHTTPURLResponse(), error: anyNsError()))
-        XCTAssertNotNil(resultErrorFor(data: anyData(), response: anyNonHTTPURLResponse(), error: anyNsError()))
-        XCTAssertNotNil(resultErrorFor(data: anyData(), response: anyHTTPURLResponse(), error: anyNsError()))
+        XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: anyNSError()))
+        XCTAssertNotNil(resultErrorFor(data: nil, response: anyNonHTTPURLResponse(), error: anyNSError()))
+        XCTAssertNotNil(resultErrorFor(data: anyData(), response: anyNonHTTPURLResponse(), error: anyNSError()))
+        XCTAssertNotNil(resultErrorFor(data: anyData(), response: anyHTTPURLResponse(), error: anyNSError()))
         XCTAssertNotNil(resultErrorFor(data: anyData(), response: anyNonHTTPURLResponse(), error: nil))
     }
     
@@ -122,7 +122,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
         
         var receivedResult: HTTPClientResult!
         let exp = expectation(description: "Wait for completion")
-        sut.get(from: anyUrl()) { result in
+        sut.get(from: anyURL()) { result in
             receivedResult = result
             
             exp.fulfill()
@@ -134,30 +134,22 @@ final class URLSessionHTTPClientTests: XCTestCase {
     }
         
     
-    private func anyUrl() -> URL {
-        return URL(string: "https://any-url.com")!
-    }
-    
     private func anyData() -> Data {
         Data("any data".utf8)
     }
     
-    private func anyNsError() -> NSError {
-        NSError(domain: "Test", code: 0)
-    }
-    
     private func anyNonHTTPURLResponse() -> URLResponse {
-        URLResponse(url: anyUrl(), mimeType: nil, expectedContentLength: 0, textEncodingName: nil)
+        URLResponse(url: anyURL(), mimeType: nil, expectedContentLength: 0, textEncodingName: nil)
     }
     
     private func anyHTTPURLResponse() -> HTTPURLResponse {
-        HTTPURLResponse(url: anyUrl(), statusCode: 200, httpVersion: nil, headerFields: nil)!
+        HTTPURLResponse(url: anyURL(), statusCode: 200, httpVersion: nil, headerFields: nil)!
     }
     
     private func makeSUT(file: StaticString = #filePath,
                          line: UInt = #line) -> HTTPClient {
         let sut = URLSessionHTTPClient()
-        track_for_memoryLeacks(sut, file: file, line: line)
+        trackForMemoryLeacks(sut, file: file, line: line)
         
         return sut
     }
