@@ -4,7 +4,7 @@
 //  Created by Mykola Dementiev
 //
 
-public class CodableFeedStore: FeedStore {
+public final class CodableFeedStore: FeedStore {
     
     private struct Cache: Codable {
         let feed: [CodableFeedImage]
