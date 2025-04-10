@@ -23,6 +23,13 @@
     {
       "target" : {
         "containerPath" : "container:EssentialFeed.xcodeproj",
+        "identifier" : "2F2712C82DA818BF0075653A",
+        "name" : "EssentialFeedCacheIntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:EssentialFeed.xcodeproj",
         "identifier" : "2F8AEA9B2D8C4FEA004D65A2",
         "name" : "EssentialFeedAPIEndToEndTests"
       }
