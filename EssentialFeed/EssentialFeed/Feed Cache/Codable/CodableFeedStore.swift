@@ -4,6 +4,7 @@
 //  Created by Mykola Dementiev
 //
 
+/*
 public final class CodableFeedStore: FeedStore {
     
     private struct Cache: Codable {
@@ -92,3 +93,4 @@ public final class CodableFeedStore: FeedStore {
         }
     }
 }
+*/

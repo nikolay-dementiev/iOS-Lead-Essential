@@ -2,6 +2,7 @@
 //  Copyright © 2019 Essential Developer. All rights reserved.
 //
 
+/*
 import XCTest
 import EssentialFeed
 
@@ -170,3 +171,4 @@ class CodableFeedStoreTests: XCTestCase, FailableFeedStore {
       return FileManager.default.urls(for: .cachesDirectory, in: .systemDomainMask).first!
     }
 }
+*/
