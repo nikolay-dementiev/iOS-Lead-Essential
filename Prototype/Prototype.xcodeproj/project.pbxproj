@@ -29,9 +29,22 @@
 		2F1141422DAD45E800308DC8 /* PrototypeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrototypeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		2F1141962DAD51A800308DC8 /* Exceptions for "Prototype" folder in "Prototype" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 2F1141212DAD45E600308DC8 /* Prototype */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		2F1141242DAD45E600308DC8 /* Prototype */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				2F1141962DAD51A800308DC8 /* Exceptions for "Prototype" folder in "Prototype" target */,
+			);
 			path = Prototype;
 			sourceTree = "<group>";
 		};
