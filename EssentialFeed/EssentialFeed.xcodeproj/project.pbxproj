@@ -45,6 +45,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2F06940F2DAEC019007EF273 /* CI_iOS.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = CI_iOS.xctestplan; sourceTree = "<group>"; };
 		2F0B585B2D8C5AA100B8B3AD /* CI_macOS.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = CI_macOS.xctestplan; sourceTree = "<group>"; };
 		2F11422A2DAEBCBC00308DC8 /* EssentialFeediOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EssentialFeediOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F1142342DAEBCBC00308DC8 /* EssentialFeediOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EssentialFeediOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -179,6 +180,7 @@
 		2F7E971A2D6797020044A88B = {
 			isa = PBXGroup;
 			children = (
+				2F06940F2DAEC019007EF273 /* CI_iOS.xctestplan */,
 				2F1142412DAEBD7600308DC8 /* EssentialFeediOS.xctestplan */,
 				2F2712D32DA818E60075653A /* EssentialFeedCacheIntegrationTests.xctestplan */,
 				2F0B585B2D8C5AA100B8B3AD /* CI_macOS.xctestplan */,
