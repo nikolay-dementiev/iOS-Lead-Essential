@@ -4,10 +4,10 @@
 //  Created by Mykola Dementiev
 //
 
-internal final class FeedItemsMapper {
+final class FeedItemsMapper {
     private static var OK_200 = 200
     
-    internal static func map(_ data: Data,
+    static func map(_ data: Data,
                              from response: HTTPURLResponse) throws -> [RemoteFeedItem] {
         
         guard response.statusCode == OK_200,

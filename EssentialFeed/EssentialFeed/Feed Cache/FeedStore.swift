@@ -4,16 +4,17 @@
 //  Created by Mykola Dementiev
 //
 
-public enum RetrieveCachedFeedResult {
-    case empty
-    case found(feed: [LocalFeedImage], timestamp: Date)
-    case failure(Error)
-}
+public typealias CachedFeed = (feed: [LocalFeedImage], timestamp: Date)
 
 public protocol FeedStore {
-    typealias DeletionCompletion = (Error?) -> Void
-    typealias InsertionCompletion = (Error?) -> Void
-    typealias RetrievalCompletion = (RetrieveCachedFeedResult) -> Void
+    typealias DeletionResult = Result<Void, Error>
+    typealias DeletionCompletion = (DeletionResult) -> Void
+    
+    typealias InsertionResult = Result<Void, Error>
+    typealias InsertionCompletion = (InsertionResult) -> Void
+    
+    typealias RetrievalFeedResult = Result<CachedFeed?, Error>
+    typealias RetrievalCompletion = (RetrievalFeedResult) -> Void
     
     /// The completion block can be invoked on any thread.
     /// Client is responsible for dispatching to appropriate thread if needed.
