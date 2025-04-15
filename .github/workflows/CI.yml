@@ -1,5 +1,5 @@
 
-name: CI-macOS
+name: CI
 
 # Controls when the action will run. 
 # Triggers the workflow on pull request events but only for the master branch.
@@ -14,7 +14,7 @@ jobs:
   # This workflow contains a single job called "build-and-test"
   build-and-test:
     # The type of runner that the job will run on
-    runs-on: macos-15
+    runs-on: macos-latest-large
 
     timeout-minutes: 8
 
