@@ -10,6 +10,7 @@ import EssentialFeed
 
 final class FeedViewController: UITableViewController {
     private var loader: FeedLoader?
+    private var onViewIsAppearing: ((FeedViewController) -> Void)?
     
     convenience init(loader: FeedLoader) {
         self.init()
@@ -19,12 +20,24 @@ final class FeedViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        refreshControl = UIRefreshControl()
+        self.onViewIsAppearing =  { vc in
+            vc.load()
+            
+            vc.onViewIsAppearing = nil
+        }
+        
+        refreshControl = CustomUIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(load), for: .valueChanged)
-        load()
+    }
+    
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+        
+        onViewIsAppearing?(self)
     }
     
     @objc private func load() {
+        refreshControl?.beginRefreshing()
         loader?.load { _ in }
     }
 }
@@ -40,14 +53,14 @@ final class FeedViewControllerTests: XCTestCase {
     func test_viewDidLoad_loadsFeed() {
         let (sut, loader) = makeSUT()
         
-        sut.loadViewIfNeeded()
+        sut.loadViewIfNeededWithAppearanceTransition()
         
         XCTAssertEqual(loader.loadCallCount, 1)
     }
     
     func test_pullToRefresh_loadsFeed() {
         let (sut, loader) = makeSUT()
-        sut.loadViewIfNeeded()
+        sut.loadViewIfNeededWithAppearanceTransition()
         
         sut.refreshControl?.simulatePullToRefresh()
         
@@ -55,6 +68,14 @@ final class FeedViewControllerTests: XCTestCase {
         
         sut.refreshControl?.simulatePullToRefresh()
         XCTAssertEqual(loader.loadCallCount, 3)
+    }
+    
+    func test_viewDidLoad_showsLoadingIndicator() {
+        let (sut, _) = makeSUT()
+        
+        sut.loadViewIfNeededWithAppearanceTransition()
+        
+        XCTAssertEqual(sut.refreshControl?.isRefreshing, true)
     }
     
     
@@ -77,6 +98,26 @@ final class FeedViewControllerTests: XCTestCase {
     }
 }
 
+private final class CustomUIRefreshControl: UIRefreshControl {
+    private var _isRefreshing: Bool = false
+    
+    override var isRefreshing: Bool {
+        _isRefreshing
+    }
+    
+    override func beginRefreshing() {
+        super.beginRefreshing()
+        
+        _isRefreshing = true
+    }
+    
+    override func endRefreshing() {
+        super.endRefreshing()
+        
+        _isRefreshing = false
+    }
+}
+
 private extension UIRefreshControl {
     func simulatePullToRefresh() {
         allTargets.forEach { target in
@@ -84,5 +125,14 @@ private extension UIRefreshControl {
                 (target as NSObject).perform(Selector($0))
             }
         }
+    }
+}
+
+private extension FeedViewController {
+    func loadViewIfNeededWithAppearanceTransition() {
+        super.loadViewIfNeeded()
+        
+        beginAppearanceTransition(true, animated: false)
+        endAppearanceTransition()
     }
 }
