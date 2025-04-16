@@ -1,7 +1,7 @@
 {
   "configurations" : [
     {
-      "id" : "19C0D3A4-3BC3-4C57-9F46-2160FC29693B",
+      "id" : "C01AB76A-29F8-4833-8FED-3D6E86887D6B",
       "name" : "Test Scheme Action",
       "options" : {
 
@@ -13,8 +13,8 @@
       "targets" : [
         {
           "containerPath" : "container:EssentialFeed.xcodeproj",
-          "identifier" : "2F7E97232D6797020044A88B",
-          "name" : "EssentialFeed"
+          "identifier" : "2F1142292DAEBCBC00308DC8",
+          "name" : "EssentialFeediOS"
         }
       ]
     },
@@ -25,8 +25,8 @@
       "parallelizable" : true,
       "target" : {
         "containerPath" : "container:EssentialFeed.xcodeproj",
-        "identifier" : "2F8AEA9B2D8C4FEA004D65A2",
-        "name" : "EssentialFeedAPIEndToEndTests"
+        "identifier" : "2F1142332DAEBCBC00308DC8",
+        "name" : "EssentialFeediOSTests"
       }
     }
   ],
