@@ -80,6 +80,7 @@
 		2F8AEA9C2D8C4FEA004D65A2 /* EssentialFeedAPIEndToEndTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EssentialFeedAPIEndToEndTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F8AEAA82D8C566D004D65A2 /* EssentialFeedAPIEndToEndTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = EssentialFeedAPIEndToEndTests.xctestplan; sourceTree = "<group>"; };
 		2F92500F2D69D71C00E8C33E /* EssentialFeed.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = EssentialFeed.xctestplan; sourceTree = "<group>"; };
+		2FD353212DB00B8C00ADF0B6 /* EssentialFeediOS.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = EssentialFeediOS.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -219,6 +220,7 @@
 		2F7E971A2D6797020044A88B = {
 			isa = PBXGroup;
 			children = (
+				2FD353212DB00B8C00ADF0B6 /* EssentialFeediOS.xctestplan */,
 				2F06940F2DAEC019007EF273 /* CI_iOS.xctestplan */,
 				2F1142412DAEBD7600308DC8 /* EssentialFeediOS.xctestplan */,
 				2F2712D32DA818E60075653A /* EssentialFeedCacheIntegrationTests.xctestplan */,
