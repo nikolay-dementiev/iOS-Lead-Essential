@@ -80,6 +80,9 @@ Location</string>
                                                                 <fontDescription key="titleFontDescription" type="system" pointSize="60"/>
                                                                 <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </buttonConfiguration>
+                                                            <connections>
+                                                                <action selector="retryButtonTapped" destination="MUP-1u-9La" eventType="touchUpInside" id="grs-qi-90b"/>
+                                                            </connections>
                                                         </button>
                                                     </subviews>
                                                     <color key="backgroundColor" red="0.89019607840000003" green="0.89019607840000003" blue="0.89019607840000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -121,6 +124,14 @@ Location</string>
                                         <constraint firstAttribute="bottomMargin" secondItem="Tft-sq-suZ" secondAttribute="bottom" priority="999" constant="6" id="m7F-r4-YKC"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="descriptionLabel" destination="nFw-Yj-HTt" id="fPg-Eu-Vqx"/>
+                                    <outlet property="feedImageContainer" destination="Oyo-xq-WXi" id="Fhe-er-EWK"/>
+                                    <outlet property="feedImageRetryButton" destination="pCI-55-ZwD" id="43z-J3-YtG"/>
+                                    <outlet property="feedImageView" destination="K0b-Pz-lXr" id="13e-3b-xL4"/>
+                                    <outlet property="locationContainer" destination="gnZ-qt-c0w" id="2If-ph-Xc2"/>
+                                    <outlet property="locationLabel" destination="gZC-hR-5Zl" id="Rvb-hb-Adk"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
