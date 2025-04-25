@@ -6,8 +6,13 @@
 
 import UIKit
 
-public final class FeedViewController: UITableViewController, UITableViewDataSourcePrefetching {
-    @IBOutlet private(set) var refreshController: FeedRefreshViewController?
+protocol FeedViewControllerDelegate {
+    func didRequestFeedRefresh()
+}
+
+public final class FeedViewController: UITableViewController, UITableViewDataSourcePrefetching, FeedLoadingView {
+    
+    var delegate: FeedViewControllerDelegate?
     
     var tableModel = [FeedImageCellController]() {
         didSet {
@@ -16,16 +21,33 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
     }
     private var onViewIsAppearing: ((FeedViewController) -> Void)?
     
+    @available(*, unavailable, message: "Use initiation via Storyboard instead!")
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.prefetchDataSource = self
         
         self.onViewIsAppearing =  { vc in
-            vc.refreshController?.refresh()
+            vc.refresh()
             
             vc.onViewIsAppearing = nil
         }
+    }
+    
+    func display(_ viewModel: FeedLoadingViewModel) {
+        if viewModel.isLoading {
+            refreshControl?.beginRefreshing()
+        } else {
+            refreshControl?.endRefreshing()
+        }
+    }
+    
+    @IBAction private func refresh() {
+        delegate?.didRequestFeedRefresh()
     }
     
     public override func viewIsAppearing(_ animated: Bool) {
