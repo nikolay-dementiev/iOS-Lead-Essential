@@ -9,7 +9,7 @@ import UIKit
 import EssentialFeed
 import EssentialFeediOS
 
-final class FeedViewControllerTests: XCTestCase {
+final class FeedUIIntegrationTests: XCTestCase {
     
     func test_feedView_hasTitle() {
         let (sut, _) = makeSUT()
@@ -318,7 +318,7 @@ private extension FeedViewController {
     }
 }
 
-extension FeedViewControllerTests {
+extension FeedUIIntegrationTests {
     func localized(_ key: String, file: StaticString = #file, line: UInt = #line) -> String {
         let table = "Feed"
         let bundle = Bundle(for: FeedViewController.self)

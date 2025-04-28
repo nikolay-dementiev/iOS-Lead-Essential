@@ -112,7 +112,7 @@
 		2F2CE9AC2DBF8308001E8DDB /* Exceptions for "EssentialFeediOSTests" folder in "EssentialFeediOSTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				"Feed UI/Controllers/Helpers/FeedViewControllerTests+Localization.swift",
+				"Feed UI/Helpers/FeedViewControllerTests+Localization.swift",
 			);
 			target = 2F1142332DAEBCBC00308DC8 /* EssentialFeediOSTests */;
 		};
@@ -130,7 +130,7 @@
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			buildPhase = 2F1142322DAEBCBC00308DC8 /* Resources */;
 			membershipExceptions = (
-				"Feed UI/Controllers/Helpers/FeedViewControllerTests+Localization.swift",
+				"Feed UI/Helpers/FeedViewControllerTests+Localization.swift",
 			);
 		};
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
