@@ -15,7 +15,7 @@ protocol FeedErrorView {
 
 final class FeedPresenter {
     private let feedView: FeedView
-    private let  loadingView: FeedLoadingView
+    private let loadingView: FeedLoadingView
     private let errorView: FeedErrorView
     
     init(feedView: FeedView,
