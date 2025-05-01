@@ -8,6 +8,28 @@ import UIKit
 import EssentialFeediOS
 
 extension FeedViewController {
+    var isShowingErrorView: Bool {
+        guard let errorView = errorView else {
+            return false
+        }
+
+        return errorView.alpha > 0
+    }
+    
+    var errorMessage: String? {
+        errorView?.message
+    }
+
+    func simulateAppearance() {
+        if !isViewLoaded {
+            loadViewIfNeeded()
+            prepareForFirstAppearance()
+        }
+
+        beginAppearanceTransition(true, animated: false)
+        endAppearanceTransition()
+    }
+    
     var isShowingLoadingIndicator: Bool {
         return refreshControl?.isRefreshing == true
     }
@@ -58,5 +80,27 @@ extension FeedViewController {
     
     private var feedImagesSection: Int {
         return 0
+    }
+    
+    /*
+    func simulateTapOnErrorMessage() {
+        errorView?.button.simulateTap()
+    }
+    */
+    
+    private func prepareForFirstAppearance() {
+        replaceRefreshControlWithSpyForiOS17Support()
+    }
+    
+    private func replaceRefreshControlWithSpyForiOS17Support() {
+        let spyRefreshControl = UIRefreshControlSpy()
+
+        refreshControl?.allTargets.forEach { target in
+            refreshControl?.actions(forTarget: target, forControlEvent: .valueChanged)?.forEach { action in
+                spyRefreshControl.addTarget(target, action: Selector(action), for: .valueChanged)
+            }
+        }
+
+        refreshControl = spyRefreshControl
     }
 }
