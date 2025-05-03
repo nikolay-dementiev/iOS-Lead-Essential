@@ -1,7 +1,7 @@
 {
   "configurations" : [
     {
-      "id" : "C01AB76A-29F8-4833-8FED-3D6E86887D6B",
+      "id" : "A29748BF-3BC8-4044-9870-7AEED68EF190",
       "name" : "Test Scheme Action",
       "options" : {
 
@@ -18,6 +18,15 @@
         }
       ]
     },
+    "commandLineArgumentEntries" : [
+
+    ],
+    "environmentVariableEntries" : [
+      {
+        "key" : "IDEPreferLogStreaming",
+        "value" : "YES"
+      }
+    ],
     "testExecutionOrdering" : "random"
   },
   "testTargets" : [
