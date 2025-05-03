@@ -18,6 +18,12 @@
         }
       ]
     },
+    "environmentVariableEntries" : [
+      {
+        "key" : "IDEPreferLogStreaming",
+        "value" : "YES"
+      }
+    ],
     "testExecutionOrdering" : "random"
   },
   "testTargets" : [

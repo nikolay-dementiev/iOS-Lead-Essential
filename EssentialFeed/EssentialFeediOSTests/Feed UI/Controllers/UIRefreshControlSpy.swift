@@ -6,7 +6,7 @@
 
 import UIKit
 
-final class CustomUIRefreshControl: UIRefreshControl {
+final class UIRefreshControlSpy: UIRefreshControl {
     private var _isRefreshing: Bool = false
     
     override var isRefreshing: Bool {
