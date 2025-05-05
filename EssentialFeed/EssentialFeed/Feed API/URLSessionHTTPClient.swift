@@ -4,7 +4,7 @@
 //  Created by Mykola Dementiev
 //
 
-public class URLSessionHTTPClient: HTTPClient {
+public final class URLSessionHTTPClient: HTTPClient {
     private let session: URLSession
     
     public init(session: URLSession = .shared) {
@@ -13,8 +13,8 @@ public class URLSessionHTTPClient: HTTPClient {
     
     private struct UnexpectedValuesRepresentationError: Error {}
     
-    public func get(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) {
-        session.dataTask(with: url) { data, response, error in
+    public func get(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
+            let task = session.dataTask(with: url) { data, response, error in
             completion( Result {
                 if let error {
                     throw error
@@ -25,6 +25,18 @@ public class URLSessionHTTPClient: HTTPClient {
                     throw UnexpectedValuesRepresentationError()
                 }
             })
-        }.resume()
+        }
+        
+        task.resume()
+        
+        return URLSessionTaskWrapper(wrapped: task)
+    }
+    
+    private struct URLSessionTaskWrapper: HTTPClientTask {
+        let wrapped: URLSessionTask
+        
+        func cancel() {
+            wrapped.cancel()
+        }
     }
 }

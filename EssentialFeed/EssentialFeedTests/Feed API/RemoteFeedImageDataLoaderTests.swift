@@ -18,8 +18,9 @@ class RemoteFeedImageDataLoader {
         case invalidData
     }
     
-    func loadImageData(from url: URL, completion: @escaping (FeedImageDataLoader.Result) -> Void) {
-        client.get(from: url) { [weak self] result in
+    @discardableResult
+    func loadImageData(from url: URL, completion: @escaping (FeedImageDataLoader.Result) -> Void) -> FeedImageDataLoaderTask {
+        return HTTPTaskWrapper(wrapped: client.get(from: url) { [weak self] result in
             guard self != nil else { return }
             
             switch result {
@@ -31,6 +32,14 @@ class RemoteFeedImageDataLoader {
                 }
             case let .failure(error): completion(.failure(error))
             }
+        })
+    }
+    
+    private struct HTTPTaskWrapper: FeedImageDataLoaderTask {
+        let wrapped: HTTPClientTask
+        
+        func cancel() {
+            wrapped.cancel()
         }
     }
 }
@@ -131,7 +140,7 @@ class RemoteFeedImageDataLoaderTests: XCTestCase {
     private func failure(_ error: RemoteFeedImageDataLoader.Error) -> FeedImageDataLoader.Result {
         return .failure(error)
     }
-
+    
     
     private func expect(_ sut: RemoteFeedImageDataLoader, toCompleteWith expectedResult: FeedImageDataLoader.Result, when action: () -> Void, file: StaticString = #file, line: UInt = #line) {
         let url = URL(string: "https://a-given-url.com")!
@@ -143,8 +152,8 @@ class RemoteFeedImageDataLoaderTests: XCTestCase {
                 XCTAssertEqual(receivedData, expectedData, file: file, line: line)
                 
             case let (.failure(receivedError as RemoteFeedImageDataLoader.Error), .failure(expectedError as RemoteFeedImageDataLoader.Error)):
-                            XCTAssertEqual(receivedError, expectedError, file: file, line: line)
-
+                XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+                
             case let (.failure(receivedError as NSError), .failure(expectedError as NSError)):
                 XCTAssertEqual(receivedError, expectedError, file: file, line: line)
                 
@@ -159,17 +168,23 @@ class RemoteFeedImageDataLoaderTests: XCTestCase {
         
         wait(for: [exp], timeout: 1.0)
     }
-
+    
     
     private class HTTPClientSpy: HTTPClient {
+        private struct Task: HTTPClientTask {
+            func cancel() {}
+        }
+        
         private var messages = [(url: URL, completion: (HTTPClient.Result) -> Void)]()
+        private(set) var cancelledURLs = [URL]()
         
         var requestedURLs: [URL] {
             return messages.map { $0.url }
         }
         
-        func get(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) {
+        func get(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
             messages.append((url, completion))
+            return Task()
         }
         
         func complete(with error: Error, at index: Int = 0) {
