@@ -13,26 +13,26 @@ extension FeedImageCell {
     }
     
     var isShowingLocation: Bool {
-        return !locationContainer.isHidden
+        !locationContainer.isHidden
     }
     
     var isShowingImageLoadingIndicator: Bool {
-        return feedImageContainer.isShimmering
+        feedImageContainer.isShimmering
     }
     
     var locationText: String? {
-        return locationLabel.text
+        locationLabel.text
     }
     
     var isShowingRetryAction: Bool {
-        return !feedImageRetryButton.isHidden
+        !feedImageRetryButton.isHidden
     }
     
     var descriptionText: String? {
-        return descriptionLabel.text
+        descriptionLabel.text
     }
     
     var renderedImage: Data? {
-        return feedImageView.image?.pngData()
+        feedImageView.image?.pngData()
     }
 }
