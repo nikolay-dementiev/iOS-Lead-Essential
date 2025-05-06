@@ -120,11 +120,12 @@ class LoadFeedImageDataFromRemoteUseCaseTests: XCTestCase {
         let sut = RemoteFeedImageDataLoader(client: client)
         trackForMemoryLeaks(sut, file: file, line: line)
         trackForMemoryLeaks(client, file: file, line: line)
+        
         return (sut, client)
     }
     
     private func failure(_ error: RemoteFeedImageDataLoader.Error) -> FeedImageDataLoader.Result {
-        return .failure(error)
+        .failure(error)
     }
     
     

@@ -31,7 +31,7 @@ extension FeedViewController {
     }
     
     var isShowingLoadingIndicator: Bool {
-        return refreshControl?.isRefreshing == true
+        refreshControl?.isRefreshing == true
     }
     
     func simulateUserInitiatedFeedReload() {
@@ -40,7 +40,8 @@ extension FeedViewController {
     
     @discardableResult
     func simulateFeedImageViewVisible(at index: Int) -> FeedImageCell? {
-        return feedImageView(at: index) as? FeedImageCell
+        
+        feedImageView(at: index) as? FeedImageCell
     }
     
     @discardableResult
@@ -69,17 +70,18 @@ extension FeedViewController {
     }
     
     func numberOfRenderedFeedImageViews() -> Int {
-        return tableView.numberOfRows(inSection: feedImagesSection)
+        tableView.numberOfRows(inSection: feedImagesSection)
     }
     
     func feedImageView(at row: Int) -> UITableViewCell? {
         let ds = tableView.dataSource
         let index = IndexPath(row: row, section: feedImagesSection)
+        
         return ds?.tableView(tableView, cellForRowAt: index)
     }
     
     private var feedImagesSection: Int {
-        return 0
+        0
     }
     
     /*

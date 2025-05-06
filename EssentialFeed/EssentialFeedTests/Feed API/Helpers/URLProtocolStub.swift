@@ -13,7 +13,7 @@ class URLProtocolStub: URLProtocol {
     
     private static var _stub: Stub?
     private static var stub: Stub? {
-        get { return queue.sync { _stub } }
+        get { queue.sync { _stub } }
         set { queue.sync { _stub = newValue } }
     }
     
@@ -58,7 +58,7 @@ class URLProtocolStub: URLProtocol {
     }
     
     override class func canInit(with request: URLRequest) -> Bool {
-        return true
+        true
     }
     
     override class func canonicalRequest(for request: URLRequest) -> URLRequest {

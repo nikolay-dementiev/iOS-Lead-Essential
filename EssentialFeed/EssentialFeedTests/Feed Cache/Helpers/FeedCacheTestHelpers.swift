@@ -8,10 +8,10 @@ import Foundation
 import EssentialFeed
 
 func uniqueImage() -> FeedImage {
-    return FeedImage(id: UUID(),
-                    description: "any",
-                    location: "any",
-                    url: anyURL())
+    FeedImage(id: UUID(),
+              description: "any",
+              location: "any",
+              url: anyURL())
 }
 
 func uniqueImageFeed() -> (models: [FeedImage], local: [LocalFeedImage]) {
@@ -21,7 +21,7 @@ func uniqueImageFeed() -> (models: [FeedImage], local: [LocalFeedImage]) {
                                                location: $0.location,
                                                url: $0.url) }
     
-    return(models, localItems)
+    return (models, localItems)
 }
 
 extension Date {

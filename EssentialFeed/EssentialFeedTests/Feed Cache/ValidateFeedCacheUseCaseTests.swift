@@ -86,6 +86,7 @@ final class ValidateFeedCacheUseCaseTests: XCTestCase {
         let sut = LocalFeedLoader(store: store, currentDate: currentDate)
         trackForMemoryLeaks(store, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
+        
         return (sut, store)
     }
 }

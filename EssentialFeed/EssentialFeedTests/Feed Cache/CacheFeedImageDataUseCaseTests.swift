@@ -63,11 +63,12 @@ class CacheFeedImageDataUseCaseTests: XCTestCase {
 		let sut = LocalFeedImageDataLoader(store: store)
 		trackForMemoryLeaks(store, file: file, line: line)
 		trackForMemoryLeaks(sut, file: file, line: line)
-		return (sut, store)
+		
+        return (sut, store)
 	}
     
     private func failed() -> LocalFeedImageDataLoader.SaveResult {
-        return .failure(LocalFeedImageDataLoader.SaveError.failed)
+        .failure(LocalFeedImageDataLoader.SaveError.failed)
     }
     
     private func expect(_ sut: LocalFeedImageDataLoader, toCompleteWith expectedResult: LocalFeedImageDataLoader.SaveResult, when action: () -> Void, file: StaticString = #file, line: UInt = #line) {

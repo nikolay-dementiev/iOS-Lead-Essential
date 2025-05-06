@@ -33,7 +33,8 @@ final class FeedLocalizationTests: XCTestCase {
 	private typealias LocalizedBundle = (bundle: Bundle, localization: String)
 
 	private func allLocalizationBundles(in bundle: Bundle, file: StaticString = #file, line: UInt = #line) -> [LocalizedBundle] {
-		return bundle.localizations.compactMap { localization in
+		
+        bundle.localizations.compactMap { localization in
 			guard
 				let path = bundle.path(forResource: localization, ofType: "lproj"),
 				let localizedBundle = Bundle(path: path)
@@ -47,7 +48,8 @@ final class FeedLocalizationTests: XCTestCase {
 	}
 
 	private func allLocalizedStringKeys(in bundles: [LocalizedBundle], table: String, file: StaticString = #file, line: UInt = #line) -> Set<String> {
-		return bundles.reduce([]) { (acc, current) in
+        
+        bundles.reduce([]) { (acc, current) in
 			guard
 				let path = current.bundle.path(forResource: table, ofType: "strings"),
 				let strings = NSDictionary(contentsOfFile: path),

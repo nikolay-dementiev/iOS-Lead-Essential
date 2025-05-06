@@ -76,15 +76,15 @@ class CoreDataFeedImageDataStoreTests: XCTestCase {
     }
 
     private func notFound() -> FeedImageDataStore.RetrievalResult {
-        return .success(.none)
+        .success(.none)
     }
     
     private func localImage(url: URL) -> LocalFeedImage {
-        return LocalFeedImage(id: UUID(), description: "any", location: "any", url: url)
+        LocalFeedImage(id: UUID(), description: "any", location: "any", url: url)
     }
 
     private func found(_ data: Data) -> FeedImageDataStore.RetrievalResult {
-        return .success(data)
+        .success(data)
     }
     
     private func expect(_ sut: CoreDataFeedStore, toCompleteRetrievalWith expectedResult: FeedImageDataStore.RetrievalResult, for url: URL,  file: StaticString = #file, line: UInt = #line) {
