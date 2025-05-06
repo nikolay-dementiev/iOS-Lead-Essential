@@ -14,7 +14,7 @@ class LoaderSpy: FeedLoader, FeedImageDataLoader {
     // MARK: - FeedLoader
     
     var loadFeedCallCount: Int {
-        return feedRequests.count
+        feedRequests.count
     }
     
     func load(completion: @escaping (FeedLoader.Result) -> Void) {
@@ -42,12 +42,13 @@ class LoaderSpy: FeedLoader, FeedImageDataLoader {
     private var imageRequests = [(url: URL, completion: (FeedImageDataLoader.Result) -> Void)]()
     
     var loadedImageURLs: [URL] {
-        return imageRequests.map { $0.url }
+        imageRequests.map { $0.url }
     }
     private(set) var cancelledImageURLs = [URL]()
     
     func loadImageData(from url: URL, completion: @escaping (FeedImageDataLoader.Result) -> Void) -> FeedImageDataLoaderTask {
         imageRequests.append((url, completion))
+        
         return TaskSpy { [weak self] in self?.cancelledImageURLs.append(url) }
     }
     

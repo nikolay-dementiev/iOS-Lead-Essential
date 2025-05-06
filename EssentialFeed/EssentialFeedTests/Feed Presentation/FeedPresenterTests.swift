@@ -62,6 +62,7 @@ final class FeedPresenterTests: XCTestCase {
                                 errorView: view)
         trackForMemoryLeaks(view, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
+        
         return (sut, view)
     }
     
@@ -72,6 +73,7 @@ final class FeedPresenterTests: XCTestCase {
         if value == key {
             XCTFail("Missing localized string for key: \(key) in table: \(table)", file: file, line: line)
         }
+        
         return value
     }
     

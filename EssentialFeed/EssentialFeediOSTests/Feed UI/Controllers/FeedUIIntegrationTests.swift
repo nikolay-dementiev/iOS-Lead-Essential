@@ -442,27 +442,16 @@ final class FeedUIIntegrationTests: XCTestCase {
     }
     
     private func makeImage(description: String? = nil, location: String? = nil, url: URL = URL(string: "http://any-url.com")!) -> FeedImage {
-        return FeedImage(id: UUID(), description: description, location: location, url: url)
+        
+        FeedImage(id: UUID(), description: description, location: location, url: url)
     }
     
     private func anyImageData() -> Data {
-        return UIImage.make(withColor: .red).pngData()!
+        
+        UIImage.make(withColor: .red).pngData()!
     }
     
     private func findView<T: UIView>(in view: UIView) -> T? {
         view.subviews.first(where: { $0 is T }) as? T
     }
 }
-
-//extension FeedUIIntegrationTests {
-//    func localized(_ key: String, file: StaticString = #file, line: UInt = #line) -> String {
-//        let table = "Feed"
-//        let bundle = Bundle(for: FeedViewController.self)
-//        let value = bundle.localizedString(forKey: key, value: nil, table: table)
-//        if value == key {
-//            XCTFail("Missing localized string for key: \(key) in table: \(table)", file: file, line: line)
-//        }
-//        return value
-//    }
-//}
-

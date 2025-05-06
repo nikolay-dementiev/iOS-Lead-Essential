@@ -87,11 +87,12 @@ final class FeedImagePresenterTests: XCTestCase {
         
         trackForMemoryLeaks(view, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
+        
         return (sut, view)
     }
     
     private var fail: (Data) -> AnyImage? {
-        return { _ in nil }
+        { _ in nil }
     }
     
     private class ViewSpy: FeedImageView {

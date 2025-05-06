@@ -11,6 +11,7 @@ extension FeedUIIntegrationTests {
         if value == key {
             XCTFail("Missing localized string for key: \(key) in table: \(table)", file: file, line: line)
         }
+        
         return value
     }
 }
