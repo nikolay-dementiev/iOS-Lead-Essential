@@ -74,6 +74,23 @@ class FeedImageDataLoaderCacheDecoratorTests: XCTestCase, FeedImageDataLoaderTes
         
         XCTAssertTrue(cache.messages.isEmpty, "Expected not to cache image data on load error")
     }
+    
+    func test_load_doesNotDeliversFeedOnDealocatedDecorator() {
+        let url = anyURL()
+        let cache = CacheSpy()
+        
+        var sut: FeedImageDataLoader?
+        (sut, _) = makeSUT(cache: cache)
+        
+        sut = nil
+        
+        var isComplitionExecuted = false
+        _ = sut?.loadImageData(from: url) { _ in
+            isComplitionExecuted = true
+        }
+        
+        XCTAssertFalse(isComplitionExecuted, "Expected not to execute complition handler")
+    }
 
     // MARK: - Helpers
 
