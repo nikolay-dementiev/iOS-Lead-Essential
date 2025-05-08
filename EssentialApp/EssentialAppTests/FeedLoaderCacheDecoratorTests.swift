@@ -24,8 +24,10 @@ final class FeedLoaderCacheDecorator: FeedLoader {
 
     func load(completion: @escaping (FeedLoader.Result) -> Void) {
         decoratee.load { [weak self] result in
+            guard let self else { return }
+            
             if let feed = try? result.get() {
-                self?.cache.save(feed) { _ in }
+                self.cache.save(feed) { _ in }
             }
             completion(result)
         }
@@ -64,6 +66,20 @@ class FeedLoaderCacheDecoratorTests: XCTestCase, FeedLoaderTestCase {
         sut.load { _ in }
         
         XCTAssertTrue(cache.messages.isEmpty, "Expected not to cache feed on load error")
+    }
+    
+    func test_load_doesNotDeliversFeedOnDealocatedDecorator() {
+        let feed = uniqueFeed()
+        var sut: FeedLoader? = makeSUT(loaderResult: .success(feed))
+        
+        sut = nil
+        
+        var isComplitionExecuted = false
+        sut?.load { _ in
+            isComplitionExecuted = true
+        }
+        
+        XCTAssertFalse(isComplitionExecuted, "Expected not to execute complition handler")
     }
     
     // MARK: - Helpers
