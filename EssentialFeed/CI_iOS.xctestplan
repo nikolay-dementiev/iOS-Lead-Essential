@@ -33,9 +33,9 @@
   "testTargets" : [
     {
       "target" : {
-        "containerPath" : "container:EssentialFeed\/EssentialFeed.xcodeproj",
-        "identifier" : "2F7E972D2D6797020044A88B",
-        "name" : "EssentialFeedTests"
+        "containerPath" : "container:EssentialApp\/EssentialApp.xcodeproj",
+        "identifier" : "2FFF0E0B2DCF8B850080C4F4",
+        "name" : "EssentialAppUIAcceptanceTests"
       }
     },
     {
@@ -43,13 +43,6 @@
         "containerPath" : "container:EssentialFeed\/EssentialFeed.xcodeproj",
         "identifier" : "2F8AEA9B2D8C4FEA004D65A2",
         "name" : "EssentialFeedAPIEndToEndTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:EssentialFeed\/EssentialFeed.xcodeproj",
-        "identifier" : "2F1142332DAEBCBC00308DC8",
-        "name" : "EssentialFeediOSTests"
       }
     },
     {
@@ -64,6 +57,20 @@
         "containerPath" : "container:EssentialApp\/EssentialApp.xcodeproj",
         "identifier" : "2F1137992DCA5A94002EC05E",
         "name" : "EssentialAppTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:EssentialFeed\/EssentialFeed.xcodeproj",
+        "identifier" : "2F7E972D2D6797020044A88B",
+        "name" : "EssentialFeedTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:EssentialFeed\/EssentialFeed.xcodeproj",
+        "identifier" : "2F1142332DAEBCBC00308DC8",
+        "name" : "EssentialFeediOSTests"
       }
     }
   ],
