@@ -16,6 +16,14 @@ extension FeedViewController {
         return errorView.alpha > 0
     }
     
+    func renderedFeedImageData(at index: Int) -> Data? {
+        guard numberOfRenderedFeedImageViews() > index else {
+            return nil
+        }
+
+        return simulateFeedImageViewVisible(at: index)?.renderedImage
+    }
+    
     var errorMessage: String? {
         errorView?.message
     }
