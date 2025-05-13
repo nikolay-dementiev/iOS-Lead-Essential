@@ -16,6 +16,14 @@ extension FeedViewController {
         return errorView.alpha > 0
     }
     
+    func renderedFeedImageData(at index: Int) -> Data? {
+        guard numberOfRenderedFeedImageViews() > index else {
+            return nil
+        }
+
+        return simulateFeedImageViewVisible(at: index)?.renderedImage
+    }
+    
     var errorMessage: String? {
         errorView?.message
     }
@@ -74,6 +82,10 @@ extension FeedViewController {
     }
     
     func feedImageView(at row: Int) -> UITableViewCell? {
+        guard numberOfRenderedFeedImageViews() > row else {
+            return nil
+        }
+        
         let ds = tableView.dataSource
         let index = IndexPath(row: row, section: feedImagesSection)
         
