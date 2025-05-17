@@ -430,6 +430,21 @@ final class FeedUIIntegrationTests: XCTestCase {
         XCTAssertEqual(sut.errorView?.alpha, 0, "Expected errorView's alpha to be 0 after animation")
         XCTAssertFalse(sut.isShowingErrorView, "Expected error view not to be displayed when successfully loaded")
     }
+    
+    func test_loadFeedCompletion_rendersSuccessfullyLoadedEmptyFeedAfterNonEmptyFeed() {
+        let image0 = makeImage()
+        let image1 = makeImage()
+        let (sut, loader) = makeSUT()
+        
+        sut.simulateAppearance()
+        loader.completeFeedLoading(with: [image0, image1], at: 0)
+        assertThat(sut, isRendering: [image0, image1])
+        
+        sut.simulateUserInitiatedFeedReload()
+        loader.completeFeedLoading(with: [], at: 1)
+        assertThat(sut, isRendering: [])
+//        RunLoop.current.run(until: Date()+1)
+    }
 
     
     // MARK: - Helpers
