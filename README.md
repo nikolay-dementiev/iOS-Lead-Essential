@@ -5,11 +5,17 @@
 
 ![CI-macOS](https://github.com/nikolay-dementiev/iOS-Lead-Essential/actions/workflows/CI-macOS.yml/badge.svg?branch=master)
 
+![Deploy](https://github.com/nikolay-dementiev/iOS-Lead-Essential/actions/workflows/Deploy.yml/badge.svg?branch=master)
+
 #### Achievements:
 
-- https://me.essentialdeveloper.com/achievements/341ef910-9de2-48df-8351-329f810d69f4 
+1. https://academy.essentialdeveloper.com/achievements/341ef910-9de2-48df-8351-329f810d69f4
+2. https://academy.essentialdeveloper.com/achievements/a71327d0-2c22-4b13-8b7d-c9cc63c1dddc
+3. https://academy.essentialdeveloper.com/achievements/88414477-65d9-4062-861c-913e1d47c07d
 
-- ![link](./Resources/white-belt-1.pdf)
+- ![1](./Resources/white-belt-1.pdf)
+- ![2](./Resources/white-belt-2.pdf)
+- ![3](./Resources/white-belt-3.pdf)
 
 
 ## Essential Feed App – Image Feed Feature
