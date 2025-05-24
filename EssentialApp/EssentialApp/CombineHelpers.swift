@@ -73,6 +73,15 @@ extension Publisher {
     }
 }
 
+//extension DispatchQueue {
+//    func executeOnMainQueue(_ action: @escaping () -> Void) {
+//        _ = Just {
+//            action()
+//        }
+//        .subscribe(on: DispatchQueue.immediateWhenOnMainQueueScheduler)
+//    }
+//}
+
 extension DispatchQueue {
     static var immediateWhenOnMainQueueScheduler: ImmediateWhenOnMainQueueScheduler {
         ImmediateWhenOnMainQueueScheduler()
