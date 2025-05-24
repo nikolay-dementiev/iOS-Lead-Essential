@@ -30,6 +30,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         LocalFeedLoader(store: store, currentDate: Date.init)
     }()
     
+    private lazy var remoteFeedLoader: RemoteFeedLoader = {
+        let remoteURL = URL(string: "https://static1.squarespace.com/static/5891c5b8d1758ec68ef5dbc2/t/5db4155a4fbade21d17ecd28/1572083034355/essential_app_feed.json")!
+        
+        let remoteClient = makeRemoteClient()
+        let remoteFeedLoader = RemoteFeedLoader(url: remoteURL, client: remoteClient)
+        
+        return remoteFeedLoader
+    }()
+    
     convenience init(httpClient: HTTPClient, store: FeedStore & FeedImageDataStore) {
         self.init()
         self.httpClient = httpClient
@@ -44,10 +53,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func configureWindow() {
-        
-        let remoteImageLoader = RemoteFeedImageDataLoader(client: makeRemoteClient())
-        let localImageLoader = LocalFeedImageDataLoader(store: store)
-        
         window?.rootViewController = UINavigationController(
             rootViewController: FeedUIComposer.feedComposedWith(
                 feedLoader: makeRemotfeedLoaderWithFallback,
@@ -64,11 +69,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func makeRemotfeedLoaderWithFallback() -> FeedLoader.Publisher {
-        let remoteURL = URL(string: "https://static1.squarespace.com/static/5891c5b8d1758ec68ef5dbc2/t/5db4155a4fbade21d17ecd28/1572083034355/essential_app_feed.json")!
-        
-        let remoteClient = makeRemoteClient()
-        let remoteFeedLoader = RemoteFeedLoader(url: remoteURL, client: remoteClient)
-        
         return remoteFeedLoader
             .loadPublisher()
             .caching(to: localFeedLoader)
