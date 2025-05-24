@@ -8,6 +8,7 @@ import UIKit
 import EssentialFeed
 import EssentialFeediOS
 import CoreData
+import Combine
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -44,26 +45,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func configureWindow() {
         
-        let remoteURL = URL(string: "https://static1.squarespace.com/static/5891c5b8d1758ec68ef5dbc2/t/5db4155a4fbade21d17ecd28/1572083034355/essential_app_feed.json")!
-        
-        let remoteClient = makeRemoteClient()
-        let remoteFeedLoader = RemoteFeedLoader(url: remoteURL, client: remoteClient)
-        let remoteImageLoader = RemoteFeedImageDataLoader(client: remoteClient)
-
+        let remoteImageLoader = RemoteFeedImageDataLoader(client: makeRemoteClient())
         let localImageLoader = LocalFeedImageDataLoader(store: store)
         
         window?.rootViewController = UINavigationController(
             rootViewController: FeedUIComposer.feedComposedWith(
-                feedLoader: FeedLoaderWithFallbackComposite(
-                    primary: FeedLoaderCacheDecorator(
-                        decoratee: remoteFeedLoader,
-                        cache: localFeedLoader),
-                    fallback: localFeedLoader),
-                imageLoader: FeedImageDataLoaderWithFallbackComposite(
-                    primary: localImageLoader,
-                    fallback: FeedImageDataLoaderCacheDecorator(
-                        decoratee: remoteImageLoader,
-                        cache: localImageLoader))))
+                feedLoader: makeRemotfeedLoaderWithFallback,
+                imageLoader: makeLocalImageLoaderWithRemoteFallback))
         window?.makeKeyAndVisible()
     }
     
@@ -73,5 +61,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func sceneWillResignActive(_ scene: UIScene) {
         localFeedLoader.validateCache { _ in }
+    }
+    
+    private func makeRemotfeedLoaderWithFallback() -> FeedLoader.Publisher {
+        let remoteURL = URL(string: "https://static1.squarespace.com/static/5891c5b8d1758ec68ef5dbc2/t/5db4155a4fbade21d17ecd28/1572083034355/essential_app_feed.json")!
+        
+        let remoteClient = makeRemoteClient()
+        let remoteFeedLoader = RemoteFeedLoader(url: remoteURL, client: remoteClient)
+        
+        return remoteFeedLoader
+            .loadPublisher()
+            .caching(to: localFeedLoader)
+            .fallback(to: localFeedLoader.loadPublisher)
+    }
+    
+    private func makeLocalImageLoaderWithRemoteFallback(url: URL) -> FeedImageDataLoader.Publisher {
+        let remoteImageLoader = RemoteFeedImageDataLoader(client: httpClient)
+        let localImageLoader = LocalFeedImageDataLoader(store: store)
+        
+        return localImageLoader
+            .loadImageDataPublisher(from: url)
+            .fallback(to: {
+                remoteImageLoader
+                    .loadImageDataPublisher(from: url)
+                    .caching(to: localImageLoader, using: url)
+            })
     }
 }
