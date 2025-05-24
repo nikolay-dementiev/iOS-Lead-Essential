@@ -21,6 +21,7 @@ final class FeedLoaderPresentationAdaper: FeedViewControllerDelegate {
         presenter?.didStartLoadingFeed()
         
         cancellable = feedLoader()
+            .dispatchOnMainQueue()
             .sink(
                 receiveCompletion: { [weak self] completion in
                     switch completion {
