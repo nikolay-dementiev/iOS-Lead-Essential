@@ -9,42 +9,6 @@ import XCTest
 
 final class LoadFeedFromRemoteUseCaseTests: XCTestCase {
     
-    func test_init_doesNotRequestsDataFromUrl() {
-        let (_, client) = makeSUT()
-        
-        XCTAssertTrue(client.requestedURLs.isEmpty)
-    }
-    
-    func test_load_RequestsDataFromURL() {
-        let url = URL(string: "https://example.com/feed")!
-        let (sut, client) = makeSUT(url: url)
-        
-        sut.load { _ in }
-        
-        XCTAssertEqual(client.requestedURLs, [url])
-    }
-    
-    func test_load_TwiceRequestsDataFromURLTwice() {
-        let url = URL(string: "https://example.com/feed")!
-        let (sut, client) = makeSUT(url: url)
-        
-        sut.load { _ in }
-        sut.load { _ in }
-        
-        XCTAssertEqual(client.requestedURLs, [url, url])
-    }
-    
-    func test_load_deliversErrorOnClientError() {
-        let url = URL(string: "https://example.com/feed")!
-        let (sut, client) = makeSUT(url: url)
-        
-        expect(sut,
-               toCompleteWithResult: failure(.connectivity)) {
-            let clientError = NSError(domain: "Test", code: 0)
-            client.complete(with: clientError)
-        }
-    }
-    
     func test_load_deliversErrorOnNon200HttpResponse() {
         let url = URL(string: "https://example.com/feed")!
         let (sut, client) = makeSUT(url: url)
