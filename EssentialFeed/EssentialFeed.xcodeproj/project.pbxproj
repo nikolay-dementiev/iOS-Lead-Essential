@@ -13,6 +13,7 @@
 		2F2712CD2DA818BF0075653A /* EssentialFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F7E97242D6797020044A88B /* EssentialFeed.framework */; };
 		2F7E972F2D6797020044A88B /* EssentialFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F7E97242D6797020044A88B /* EssentialFeed.framework */; };
 		2F8AEAA02D8C4FEA004D65A2 /* EssentialFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F7E97242D6797020044A88B /* EssentialFeed.framework */; };
+		2FE3A6442DE5DCB000E3F2D7 /* ImageComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FE3A6432DE5DCB000E3F2D7 /* ImageComment.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,7 @@
 		2F8AEAA82D8C566D004D65A2 /* EssentialFeedAPIEndToEndTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = EssentialFeedAPIEndToEndTests.xctestplan; sourceTree = "<group>"; };
 		2F92500F2D69D71C00E8C33E /* EssentialFeed.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = EssentialFeed.xctestplan; sourceTree = "<group>"; };
 		2FD353212DB00B8C00ADF0B6 /* EssentialFeediOS.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = EssentialFeediOS.xctestplan; sourceTree = "<group>"; };
+		2FE3A6432DE5DCB000E3F2D7 /* ImageComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageComment.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -236,6 +238,7 @@
 				2F0B585B2D8C5AA100B8B3AD /* CI_macOS.xctestplan */,
 				2F8AEAA82D8C566D004D65A2 /* EssentialFeedAPIEndToEndTests.xctestplan */,
 				2F92500F2D69D71C00E8C33E /* EssentialFeed.xctestplan */,
+				2FE3A6422DE5DC6E00E3F2D7 /* ImageCommentFeature */,
 				2F7E97262D6797020044A88B /* EssentialFeed */,
 				2F7E97322D6797020044A88B /* EssentialFeedTests */,
 				2F8AEA9D2D8C4FEA004D65A2 /* EssentialFeedAPIEndToEndTests */,
@@ -258,6 +261,14 @@
 				2F1142342DAEBCBC00308DC8 /* EssentialFeediOSTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		2FE3A6422DE5DC6E00E3F2D7 /* ImageCommentFeature */ = {
+			isa = PBXGroup;
+			children = (
+				2FE3A6432DE5DCB000E3F2D7 /* ImageComment.swift */,
+			);
+			path = ImageCommentFeature;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -548,6 +559,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2FE3A6442DE5DCB000E3F2D7 /* ImageComment.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
