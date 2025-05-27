@@ -103,12 +103,17 @@ final class LoadImageCommentsFromRemoteUseCaseTests: XCTestCase {
         let (sut, client) = makeSUT()
         
         let item1 = makeItem(id: UUID(),
-                            imageURL: URL(string: "http://a-url.com")!)
+                             message: "a message",
+                             createdAt: (Date(timeIntervalSince1970: 1598627222), "2020-08-28T15:07:02+00:00"),
+                             userName: "a user name")
 
-        let item2 = makeItem(id: UUID(),
-                             description: "a description",
-                             location: "a location",
-                             imageURL: URL(string: "http://b-url.com")!)
+        let item2 = makeItem(
+            id: UUID(),
+            message: "another message",
+            createdAt: (Date(timeIntervalSince1970: 1577881882), "2020-01-01T12:31:22+00:00"),
+            userName: "another username")
+        
+        let items = [item1.model, item2.model]
         
         let samples = [200, 201, 250, 280, 299]
         
@@ -117,8 +122,7 @@ final class LoadImageCommentsFromRemoteUseCaseTests: XCTestCase {
             .forEach { ind, code in
                 
                 expect(sut,
-                       toCompleteWithResult: .success([item1.model,
-                                                       item2.model])) {
+                       toCompleteWithResult: .success(items)) {
                     let json = makeItemsJSON([item1.json,
                                               item2.json])
                     client.complete(withStatusCode: code,
@@ -141,22 +145,24 @@ final class LoadImageCommentsFromRemoteUseCaseTests: XCTestCase {
     }
     
     private func makeItem(id: UUID,
-                          description: String? = nil,
-                          location: String? = nil,
-                          imageURL: URL) -> (model: FeedImage, json: [String: Any]) {
+                          message: String,
+                          createdAt: (date: Date, iso8601String: String),
+                          userName: String) -> (model: ImageComment, json: [String: Any]) {
         
-        let feedItem = FeedImage(id: id,
-                                description: description,
-                                location: location,
-                                url: imageURL)
-        let itemJson = [
-            "id": feedItem.id.uuidString,
-            "description": feedItem.description,
-            "location": feedItem.location,
-            "image": feedItem.url.absoluteString
-        ].compactMapValues { $0 }
+        let item = ImageComment(id: id,
+                                message: message,
+                                createdAt: createdAt.date,
+                                authorName: userName)
+        let itemJson: [String: Any] = [
+            "id": id.uuidString,
+            "message": message,
+            "created_at": createdAt.iso8601String,
+            "author": [
+                "username": userName
+            ]
+        ]
         
-        return (feedItem, itemJson)
+        return (item, itemJson)
     }
     
     private func expect(_ sut: RemoteImageCommentsLoader,
