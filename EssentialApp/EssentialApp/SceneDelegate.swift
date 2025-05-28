@@ -88,4 +88,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 }
 
-extension RemoteLoader: @retroactive FeedLoader where Resource == [FeedImage] {}
+//REMOVE:extension RemoteLoader: @retroactive FeedLoader where Resource == [FeedImage] {}
