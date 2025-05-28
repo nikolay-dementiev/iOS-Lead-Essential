@@ -30,11 +30,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         LocalFeedLoader(store: store, currentDate: Date.init)
     }()
     
-    private lazy var remoteFeedLoader: RemoteFeedLoader = {
+    private lazy var remoteFeedLoader: RemoteLoader = {
         let remoteURL = URL(string: "https://static1.squarespace.com/static/5891c5b8d1758ec68ef5dbc2/t/5db4155a4fbade21d17ecd28/1572083034355/essential_app_feed.json")!
         
         let remoteClient = makeRemoteClient()
-        let remoteFeedLoader = RemoteFeedLoader(url: remoteURL, client: remoteClient)
+        let remoteFeedLoader = RemoteLoader(url: remoteURL, client: remoteClient, mapper: FeedItemsMapper.map)
         
         return remoteFeedLoader
     }()
@@ -89,4 +89,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 }
 
-extension RemoteFeedLoader: @retroactive FeedLoader where Resource == [FeedImage] {}
+extension RemoteLoader: @retroactive FeedLoader where Resource == [FeedImage] {}
