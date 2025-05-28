@@ -30,11 +30,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         LocalFeedLoader(store: store, currentDate: Date.init)
     }()
     
-    private lazy var remoteFeedLoader: RemoteLoader = {
+    private lazy var remoteFeedLoader: Publishers.TryMap<AnyPublisher<(Data, HTTPURLResponse), any Error>, [FeedImage]> = {
         let remoteURL = URL(string: "https://static1.squarespace.com/static/5891c5b8d1758ec68ef5dbc2/t/5db4155a4fbade21d17ecd28/1572083034355/essential_app_feed.json")!
         
         let remoteClient = makeRemoteClient()
-        let remoteFeedLoader = RemoteLoader(url: remoteURL, client: remoteClient, mapper: FeedItemsMapper.map)
+        let remoteFeedLoader = remoteClient.getPublisher(url: remoteURL).tryMap(FeedItemsMapper.map)
         
         return remoteFeedLoader
     }()
@@ -70,7 +70,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     private func makeRemotfeedLoaderWithFallback() -> FeedLoader.Publisher {
         return remoteFeedLoader
-            .loadPublisher()
             .caching(to: localFeedLoader)
             .fallback(to: localFeedLoader.loadPublisher)
     }
