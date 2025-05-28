@@ -68,7 +68,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         localFeedLoader.validateCache { _ in }
     }
     
-    private func makeRemotfeedLoaderWithFallback() -> FeedLoader.Publisher {
+    private func makeRemotfeedLoaderWithFallback() -> AnyPublisher<[FeedImage], Error> {
         return remoteFeedLoader
             .caching(to: localFeedLoader)
             .fallback(to: localFeedLoader.loadPublisher)
