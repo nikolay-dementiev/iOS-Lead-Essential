@@ -7,9 +7,10 @@
 import Foundation
 import EssentialFeed
 import EssentialFeediOS
+import Combine
 
-class LoaderSpy: FeedLoader, FeedImageDataLoader {
-    private var feedRequests = [(FeedLoader.Result) -> Void]()
+class LoaderSpy: FeedImageDataLoader {
+    private var feedRequests = [PassthroughSubject<[FeedImage], Error>]()
     
     // MARK: - FeedLoader
     
@@ -17,17 +18,20 @@ class LoaderSpy: FeedLoader, FeedImageDataLoader {
         feedRequests.count
     }
     
-    func load(completion: @escaping (FeedLoader.Result) -> Void) {
-        feedRequests.append(completion)
-    }
-    
     func completeFeedLoading(with feed: [FeedImage] = [], at index: Int = 0) {
-        feedRequests[index](.success(feed))
+        feedRequests[index].send(feed)
     }
     
     func completeFeedLoadingWithError(at index: Int = 0) {
         let error = NSError(domain: "an error", code: 0)
-        feedRequests[index](.failure(error))
+        feedRequests[index].send(completion: .failure(error))
+    }
+    
+    func loadPublisher() -> AnyPublisher<[FeedImage], Error> {
+        let publisher = PassthroughSubject<[FeedImage], Error>()
+        feedRequests.append(publisher)
+        
+        return publisher.eraseToAnyPublisher()
     }
     
     // MARK: - FeedImageDataLoader
