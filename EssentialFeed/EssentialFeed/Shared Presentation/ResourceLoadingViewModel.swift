@@ -4,6 +4,6 @@
 //  Created by Mykola Dementiev
 //
 
-public struct FeedLoadingViewModel {
+public struct ResourceLoadingViewModel {
     public let isLoading: Bool
 }
