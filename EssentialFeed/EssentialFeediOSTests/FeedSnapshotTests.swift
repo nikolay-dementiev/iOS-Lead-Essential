@@ -27,7 +27,7 @@ class FeedSnapshotTests: XCTestCase {
         assert(snapshot: sut.snapshot(for: .iPhone8(style: .light)), named: "FEED_WITH_CONTENT_light")
         assert(snapshot: sut.snapshot(for: .iPhone8(style: .dark)), named: "FEED_WITH_CONTENT_dark")
     }
-    
+
     func test_feedWithErrorMessage() {
         let sut = makeSUT()
         
@@ -98,7 +98,7 @@ class FeedSnapshotTests: XCTestCase {
 private extension FeedViewController {
     func display(_ stubs: [ImageStub]) {
         let cells: [FeedImageCellController] = stubs.map { stub in
-            let cellController = FeedImageCellController(delegate: stub)
+            let cellController = FeedImageCellController(viewModel: stub.viewModel, delegate: stub)
             stub.controller = cellController
             return cellController
         }
@@ -121,7 +121,11 @@ private class ImageStub: FeedImageCellControllerDelegate {
     }
     
     func didRequestImage() {
-        controller?.display(viewModel)
+        guard let image = viewModel.image else {
+            controller?.display(ResourceErrorViewModel(message: viewModel.shouldRetry ? "Failed to load image" : nil))
+            return
+        }
+        controller?.display(image)
     }
     
     func didCancelImageRequest() {}
