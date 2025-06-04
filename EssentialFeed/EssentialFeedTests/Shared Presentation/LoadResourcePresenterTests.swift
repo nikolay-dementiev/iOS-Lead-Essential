@@ -42,10 +42,12 @@ class LoadResourcePresenterTests: XCTestCase {
         ])
     }
     
-    func test_didFinishLoadingResourceWithError_displaysLocalizedErrorMessageAndStopsLoading() {
-        let (sut, view) = makeSUT()
-        
-        sut.didFinishLoading(with: anyNSError())
+    func test_didFinishLoadingResourceWithMapperError_displaysLocalizedErrorMessageAndStopsLoading() {
+        let (sut, view) = makeSUT(mapper: { _ in
+            throw anyNSError()
+        })
+         
+        sut.didFinishLoading(with: "a resource")
         
         XCTAssertEqual(view.messages, [
             .display(errorMessage: localized("GENERIC_CONNECTION_ERROR")),
