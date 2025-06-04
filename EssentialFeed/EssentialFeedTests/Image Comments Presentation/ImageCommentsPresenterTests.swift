@@ -21,6 +21,42 @@ final class ImageCommentsPresenterTests: XCTestCase {
         XCTAssertEqual(viewModel.feed, feed, "Expected view model to contain the feed images")
     }
     
+    func test_map_createsViewModels() {
+        let now = Date()
+        let comments = [
+            ImageComment(
+                id: UUID(),
+                message: "a message",
+                createdAt: now.adding(minutes: -5),
+                userName: "a user name"
+            ),
+            ImageComment(
+                id: UUID(),
+                message: "another message",
+                createdAt: now.adding(days: -1),
+                userName: "another user name"
+            )
+        ]
+        
+        let viewModel = ImageCommentsPresenter.map(comments)
+        
+        XCTAssertEqual(
+            viewModel.comments,
+            [
+                ImageCommentViewModel(
+                    message: "a message",
+                    date: "5 minutes ago",
+                    userName: "a user name"
+                ),
+                ImageCommentViewModel(
+                    message: "another message",
+                    date: "1 day ago",
+                    userName: "another user name"
+                )
+            ]
+        )
+    }
+    
     // MARK: - Helpers
     
     private func localized(_ key: String, file: StaticString = #file, line: UInt = #line) -> String {
