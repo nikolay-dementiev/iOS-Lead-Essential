@@ -23,14 +23,15 @@ final class FeedViewAdapter: ResourceView {
         controller?.display(
             viewModel.feed
                 .map { model in
-                    //            let adapter = FeedImageDataLoaderPresentationAdapter<WeakRefVirtualProxy<FeedImageCellController>, UIImage>(model: model, imageLoader: imageLoader)
+                    //REMOVE
+                    //let adapter = FeedImageDataLoaderPresentationAdapter<WeakRefVirtualProxy<FeedImageCellController>, UIImage>(model: model, imageLoader: imageLoader)
                     
                     let adapter = LoadResourcePresentationAdapter<Data, WeakRefVirtualProxy<FeedImageCellController>>(loader: { [imageLoader] in
                         imageLoader(model.url)
                     })
                     
                     let view = FeedImageCellController(
-                        viewModel: FeedImagePresenter<FeedImageCellController, UIImage>.map(model),
+                        viewModel: FeedImagePresenter.map(model),
                         delegate: adapter
                     )
                     
