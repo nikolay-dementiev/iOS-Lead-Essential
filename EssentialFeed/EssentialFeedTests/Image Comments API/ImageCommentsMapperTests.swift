@@ -80,7 +80,7 @@ final class ImageCommentsMapperTests: XCTestCase {
         let item = ImageComment(id: id,
                                 message: message,
                                 createdAt: createdAt.date,
-                                authorName: userName)
+                                userName: userName)
         let itemJson: [String: Any] = [
             "id": id.uuidString,
             "message": message,
