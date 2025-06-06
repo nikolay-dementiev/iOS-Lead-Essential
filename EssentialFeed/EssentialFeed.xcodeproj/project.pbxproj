@@ -88,6 +88,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Feed Presentation/FeedLocalizationTests.swift",
+				Helpers/SharedLocalisationTestHelpers.swift,
 				"Helpers/XCTestCase+MemoryLeakTrackingHelper.swift",
 			);
 			target = 2F1142332DAEBCBC00308DC8 /* EssentialFeediOSTests */;
@@ -96,6 +97,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Feed Cache/Helpers/FeedCacheTestHelpers.swift",
+				Helpers/SharedLocalisationTestHelpers.swift,
 				Helpers/SharedTestHelpers.swift,
 				"Helpers/XCTestCase+MemoryLeakTrackingHelper.swift",
 			);
@@ -112,6 +114,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Feed Cache/Helpers/FeedCacheTestHelpers.swift",
+				Helpers/SharedLocalisationTestHelpers.swift,
 				Helpers/SharedTestHelpers.swift,
 				"Helpers/XCTestCase+MemoryLeakTrackingHelper.swift",
 			);

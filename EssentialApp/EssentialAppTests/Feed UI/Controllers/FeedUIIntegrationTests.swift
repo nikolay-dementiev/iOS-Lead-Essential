@@ -16,7 +16,7 @@ final class FeedUIIntegrationTests: XCTestCase {
         let (sut, _) = makeSUT()
         sut.simulateAppearance()
         
-        XCTAssertEqual(sut.title, localized("FEED_VIEW_TITLE"))
+        XCTAssertEqual(sut.title, feedTitle)
     }
     
     func test_loadFeedActions_requestFeedFromLoader() {
@@ -324,7 +324,7 @@ final class FeedUIIntegrationTests: XCTestCase {
         XCTAssertEqual(sut.errorMessage, nil)
 
         loader.completeFeedLoadingWithError(at: 0)
-        XCTAssertEqual(sut.errorMessage, localized("FEED_VIEW_CONNECTION_ERROR"))
+        XCTAssertEqual(sut.errorMessage, loadError)
 
         sut.simulateUserInitiatedFeedReload()
         XCTAssertEqual(sut.errorMessage, nil)
@@ -338,7 +338,7 @@ final class FeedUIIntegrationTests: XCTestCase {
         XCTAssertEqual(sut.errorMessage, nil)
 
         loader.completeFeedLoadingWithError(at: 0)
-        XCTAssertEqual(sut.errorMessage, localized("FEED_VIEW_CONNECTION_ERROR"))
+        XCTAssertEqual(sut.errorMessage, localized("GENERIC_CONNECTION_ERROR"))
 
         sut.simulateTapOnErrorMessage()
         XCTAssertEqual(sut.errorMessage, nil)
@@ -381,7 +381,7 @@ final class FeedUIIntegrationTests: XCTestCase {
         
         let errorView: ErrorView? = findView(in: sut.view)
         XCTAssertEqual(errorView?.message,
-                       localized("FEED_VIEW_CONNECTION_ERROR"),
+                       localized("GENERIC_CONNECTION_ERROR"),
                        "Expected error view to display localized error text")
     }
     
