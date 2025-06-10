@@ -7,7 +7,7 @@
 import UIKit
 import EssentialFeediOS
 
-extension FeedViewController {
+extension ListViewController {
     var isShowingErrorView: Bool {
         guard let errorView = errorView else {
             return false

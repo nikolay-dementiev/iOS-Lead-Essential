@@ -17,7 +17,7 @@ public protocol CellController {
     func cancelLoad()
 }
 
-public final class FeedViewController: UITableViewController, UITableViewDataSourcePrefetching, ResourceLoadingView, ResourceErrorView {
+public final class ListViewController: UITableViewController, UITableViewDataSourcePrefetching, ResourceLoadingView, ResourceErrorView {
     @IBOutlet private(set) public var errorView: ErrorView?
     
     private var loadingControllers = [IndexPath: CellController]()
@@ -27,7 +27,7 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
     private var tableModel = [CellController]() {
         didSet { tableView.reloadData() }
     }
-    private var onViewIsAppearing: ((FeedViewController) -> Void)?
+    private var onViewIsAppearing: ((ListViewController) -> Void)?
     
     @available(*, unavailable, message: "Use initiation via Storyboard instead!")
     required init?(coder: NSCoder) {
