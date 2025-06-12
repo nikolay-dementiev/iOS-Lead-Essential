@@ -64,7 +64,7 @@ public final class ListViewController: UITableViewController, UITableViewDataSou
     }
     
     @IBAction private func refresh() {
-        onRefresh?()
+        onRefresh?() 
     }
     
     public override func viewIsAppearing(_ animated: Bool) {
