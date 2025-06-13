@@ -9,9 +9,7 @@ import XCTest
 import EssentialFeediOS
 
 class FeedSnapshotTests: XCTestCase {
-    
-    
-    
+
     func test_feedWithContent() {
         let sut = makeSUT()
         
