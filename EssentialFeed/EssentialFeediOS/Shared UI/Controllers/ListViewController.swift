@@ -8,7 +8,7 @@ import UIKit
 import EssentialFeed
 
 public final class ListViewController: UITableViewController, UITableViewDataSourcePrefetching, ResourceLoadingView, ResourceErrorView {
-    @IBOutlet private(set) public var errorView: ErrorView?
+    private(set) public var errorView = ErrorView()
     
     private var loadingControllers = [IndexPath: CellController]()
     
@@ -54,7 +54,7 @@ public final class ListViewController: UITableViewController, UITableViewDataSou
     }
     
     public func display(_ viewModel: ResourceErrorViewModel) {
-        errorView?.message = viewModel.message
+        errorView.message = viewModel.message
     }
     
     @IBAction private func refresh() {
