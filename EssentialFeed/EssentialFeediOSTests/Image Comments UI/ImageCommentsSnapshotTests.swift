@@ -34,6 +34,16 @@ final class ImageCommentsSnapshotTests: XCTestCase {
     }
     
     private func comments() -> [CellController] {
+        commentControllers().map {
+            CellController(
+                dataSource: $0 as UITableViewDataSource,
+                delegate: $0 as? UITableViewDelegate,
+                dataSourcePrefetching: $0 as? UITableViewDataSourcePrefetching
+            )
+        }
+    }
+    
+    private func commentControllers() -> [ImageCommentCellController] {
         return [
             ImageCommentCellController(
                 model: ImageCommentViewModel(
