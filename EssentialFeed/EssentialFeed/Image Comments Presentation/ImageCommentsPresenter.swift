@@ -26,6 +26,14 @@ public struct ImageCommentViewModel: Equatable {
     }
 }
 
+extension ImageCommentViewModel: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(message)
+        hasher.combine(date)
+        hasher.combine(userName)
+    }
+}
+
 public final class ImageCommentsPresenter {
     
     public static var title: String {
