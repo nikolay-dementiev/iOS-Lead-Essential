@@ -84,6 +84,7 @@ private extension ListViewController {
             let cellController = FeedImageCellController(viewModel: stub.viewModel, delegate: stub)
             stub.controller = cellController
             
+            return CellController(id: stub.viewModel, cellController)
         }
         
         display(cells)

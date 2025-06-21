@@ -87,6 +87,10 @@ extension Publisher {
     func dispatchOnMainQueue() -> AnyPublisher<Output, Failure> {
         receive(on: DispatchQueue.immediateWhenOnMainQueueScheduler).eraseToAnyPublisher()
     }
+    
+    func dispatchOnMainThread() -> AnyPublisher<Output, Failure> {
+        receive(on: DispatchQueue.immediateWhenOnMainThreadScheduler).eraseToAnyPublisher()
+    }
 }
 
 //extension DispatchQueue {
@@ -145,3 +149,53 @@ extension DispatchQueue {
         }
     }
 }
+
+extension DispatchQueue {
+    static var immediateWhenOnMainThreadScheduler: ImmediateWhenOnMainThreadScheduler {
+        ImmediateWhenOnMainThreadScheduler()
+    }
+    
+    struct ImmediateWhenOnMainThreadScheduler: Scheduler {
+        typealias SchedulerTimeType = DispatchQueue.SchedulerTimeType
+        typealias SchedulerOptions = DispatchQueue.SchedulerOptions
+        
+        var now: SchedulerTimeType {
+            DispatchQueue.main.now
+        }
+        
+        var minimumTolerance: SchedulerTimeType.Stride {
+            DispatchQueue.main.minimumTolerance
+        }
+        
+        func schedule(options: SchedulerOptions?, _ action: @escaping () -> Void) {
+            guard Thread.isMainThread else {
+                return DispatchQueue.main.schedule(options: options, action)
+            }
+            
+            action()
+        }
+        
+        func schedule(after date: SchedulerTimeType, tolerance: SchedulerTimeType.Stride, options: SchedulerOptions?, _ action: @escaping () -> Void) {
+            DispatchQueue.main.schedule(after: date, tolerance: tolerance, options: options, action)
+        }
+        
+        func schedule(after date: SchedulerTimeType, interval: SchedulerTimeType.Stride, tolerance: SchedulerTimeType.Stride, options: SchedulerOptions?, _ action: @escaping () -> Void) -> Cancellable {
+            DispatchQueue.main.schedule(after: date, interval: interval, tolerance: tolerance, options: options, action)
+        }
+    }
+}
+
+//https://github.com/essentialdevelopercom/essential-feed-case-study/commit/0fbdd1a47a6df8a356d89d668c44dfbcc2b159ac
+
+//
+//typealias AnyDispatchQueueScheduler = AnyScheduler<DispatchQueue.SchedulerTimeType, DispatchQueue.SchedulerOptions>
+//
+//extension AnyDispatchQueueScheduler {
+//    static var immediateOnMainQueue: Self {
+//        DispatchQueue.immediateWhenOnMainQueueScheduler.eraseToAnyScheduler()
+//    }
+//    
+//    static var immediateOnMainThread: Self {
+//        DispatchQueue.immediateWhenOnMainThreadScheduler.eraseToAnyScheduler()
+//    }
+//}

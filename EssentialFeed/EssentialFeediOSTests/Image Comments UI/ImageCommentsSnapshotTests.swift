@@ -6,7 +6,7 @@
 
 import XCTest
 @testable import EssentialFeed
-import EssentialFeediOS
+@testable import EssentialFeediOS
 
 final class ImageCommentsSnapshotTests: XCTestCase {
 
@@ -41,6 +41,7 @@ final class ImageCommentsSnapshotTests: XCTestCase {
     private func comments() -> [CellController] {
         commentControllers().map {
             CellController(
+                id: $0.model,
                 dataSource: $0 as UITableViewDataSource,
                 delegate: $0 as? UITableViewDelegate,
                 dataSourcePrefetching: $0 as? UITableViewDataSourcePrefetching
