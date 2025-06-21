@@ -330,6 +330,19 @@ final class FeedUIIntegrationTests: XCTestCase {
         XCTAssertEqual(sut.errorMessage, nil)
     }
     
+    func test_tapOnErrorView_hidesErrorMessage() {
+        let (sut, loader) = makeSUT()
+
+        sut.simulateAppearance()
+        XCTAssertEqual(sut.errorMessage, nil)
+
+        loader.completeFeedLoadingWithError(at: 0)
+        XCTAssertEqual(sut.errorMessage, loadError)
+
+        sut.simulateErrorViewTap()
+        XCTAssertEqual(sut.errorMessage, nil)
+    }
+    
     /*
     func test_errorView_dismissesErrorMessageOnTap() {
         let (sut, loader) = makeSUT()
@@ -415,7 +428,7 @@ final class FeedUIIntegrationTests: XCTestCase {
         
         let expectationViewAlpha = XCTestExpectation(description: "Wait for alpha to become 0")
         var observationViewAlpha: NSKeyValueObservation?
-        observationViewAlpha = sut.errorView?.observe(\.alpha, options: [.new]) { (view, change) in
+        observationViewAlpha = sut.errorView.observe(\.alpha, options: [.new]) { (view, change) in
             guard view.alpha.isZero else {
                 return
             }
@@ -427,7 +440,7 @@ final class FeedUIIntegrationTests: XCTestCase {
         
         wait(for: [expectationViewAlpha], timeout: 1.0)
         
-        XCTAssertEqual(sut.errorView?.alpha, 0, "Expected errorView's alpha to be 0 after animation")
+        XCTAssertEqual(sut.errorView.alpha, 0, "Expected errorView's alpha to be 0 after animation")
         XCTAssertFalse(sut.isShowingErrorView, "Expected error view not to be displayed when successfully loaded")
     }
     

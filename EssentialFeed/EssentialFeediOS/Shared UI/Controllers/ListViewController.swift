@@ -27,6 +27,7 @@ public final class ListViewController: UITableViewController, UITableViewDataSou
     public override func viewDidLoad() {
         super.viewDidLoad()
         
+        configureErrorView()
         self.onViewIsAppearing =  { vc in
             vc.refresh()
             
@@ -58,7 +59,7 @@ public final class ListViewController: UITableViewController, UITableViewDataSou
     }
     
     @IBAction private func refresh() {
-        onRefresh?() 
+        onRefresh?()
     }
     
     public override func viewIsAppearing(_ animated: Bool) {
@@ -99,6 +100,28 @@ public final class ListViewController: UITableViewController, UITableViewDataSou
         indexPaths.forEach { indexPath in
             let dsp = cellController(forRowAt: indexPath).dataSourcePrefetching
             dsp?.tableView?(tableView, cancelPrefetchingForRowsAt: [indexPath])
+        }
+    }
+    
+    private func configureErrorView() {
+        let container = UIView()
+        container.backgroundColor = .clear
+        container.addSubview(errorView)
+        
+        errorView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            errorView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            container.trailingAnchor.constraint(equalTo: errorView.trailingAnchor),
+            errorView.topAnchor.constraint(equalTo: container.topAnchor),
+            container.bottomAnchor.constraint(equalTo: errorView.bottomAnchor)
+        ])
+        
+        tableView.tableHeaderView = container
+        
+        errorView.onHide = { [weak self] in
+            self?.tableView.beginUpdates()
+            self?.tableView.sizeTableHeaderToFit()
+            self?.tableView.endUpdates()
         }
     }
     

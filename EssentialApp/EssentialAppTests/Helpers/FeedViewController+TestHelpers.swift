@@ -9,11 +9,7 @@ import EssentialFeediOS
 
 extension ListViewController {
     var isShowingErrorView: Bool {
-        guard let errorView = errorView else {
-            return false
-        }
-
-        return errorView.alpha > 0
+        errorView.alpha > 0
     }
     
     func renderedFeedImageData(at index: Int) -> Data? {
@@ -25,7 +21,7 @@ extension ListViewController {
     }
     
     var errorMessage: String? {
-        errorView?.message
+        errorView.message
     }
 
     func simulateAppearance() {
@@ -94,6 +90,10 @@ extension ListViewController {
     
     private var feedImagesSection: Int {
         0
+    }
+    
+    func simulateErrorViewTap() {
+        errorView.simulateTap()
     }
     
     /*
