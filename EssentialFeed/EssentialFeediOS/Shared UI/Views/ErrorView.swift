@@ -14,8 +14,9 @@ public final class ErrorView: UIControl {
         label.textColor = .white
         label.textAlignment = .center
         label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 17)
+        label.font = .preferredFont(forTextStyle: .body)
         label.isUserInteractionEnabled = false
+        label.adjustsFontForContentSizeCategory = true
         
         return label
     }()
