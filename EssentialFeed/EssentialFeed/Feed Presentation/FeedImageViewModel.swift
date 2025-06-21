@@ -12,3 +12,11 @@ public struct FeedImageViewModel {
         location != nil
     }
 }
+
+extension FeedImageViewModel: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(description)
+        hasher.combine(location)
+    }
+}
+    
