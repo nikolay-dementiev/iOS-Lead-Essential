@@ -16,3 +16,10 @@ extension FeedUIIntegrationTests {
         func display(_ viewModel: Any) {}
     }
 }
+
+
+extension CommentsUIIntegrationTests {
+    var commentsTitle: String {
+        ImageCommentsPresenter.title
+    }
+}

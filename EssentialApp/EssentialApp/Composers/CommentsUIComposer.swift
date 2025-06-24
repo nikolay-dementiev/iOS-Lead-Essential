@@ -17,7 +17,7 @@ public final class CommentsUIComposer {
     
     public static func commentsComposedWith(commentsLoader: @escaping () -> AnyPublisher<[FeedImage], Error>) -> ListViewController {
         let presentationAdapter = FeedPresentationAdapter(loader: { commentsLoader().dispatchOnMainQueue() })
-        let feedController = makeFeedViewController(title: FeedPresenter.title)
+        let feedController = makeFeedViewController(title: ImageCommentsPresenter.title)
         feedController.onRefresh = presentationAdapter.loadResource
         presentationAdapter.presenter = LoadResourcePresenter(resourceView: FeedViewAdapter(controller: feedController,
                                                                                             imageLoader: { _ in Empty<Data, Error>().eraseToAnyPublisher() }),
@@ -31,7 +31,7 @@ public final class CommentsUIComposer {
     private static func makeFeedViewController(title: String) -> ListViewController {
         let storyboard = UIStoryboard(name: "Feed", bundle: Bundle(for: ListViewController.self))
         let feedController = storyboard.instantiateInitialViewController() as! ListViewController
-        feedController.title = FeedPresenter.title
+        feedController.title = title
         
         return feedController
     }

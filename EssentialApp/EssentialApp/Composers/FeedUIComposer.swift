@@ -32,7 +32,7 @@ public final class FeedUIComposer {
     private static func makeFeedViewController(title: String) -> ListViewController {
         let storyboard = UIStoryboard(name: "Feed", bundle: Bundle(for: ListViewController.self))
         let feedController = storyboard.instantiateInitialViewController() as! ListViewController
-        feedController.title = FeedPresenter.title
+        feedController.title = title
         
         return feedController
     }
