@@ -8,6 +8,7 @@ import UIKit
 import EssentialFeediOS
 
 extension ListViewController {
+    
     public override func loadViewIfNeeded() {
         super.loadViewIfNeeded()
         
@@ -22,20 +23,20 @@ extension ListViewController {
         guard numberOfRenderedFeedImageViews() > index else {
             return nil
         }
-
+        
         return simulateFeedImageViewVisible(at: index)?.renderedImage
     }
     
     var errorMessage: String? {
         errorView.message
     }
-
+    
     func simulateAppearance() {
         if !isViewLoaded {
             loadViewIfNeeded()
             prepareForFirstAppearance()
         }
-
+        
         beginAppearanceTransition(true, animated: false)
         endAppearanceTransition()
     }
@@ -48,6 +49,28 @@ extension ListViewController {
         refreshControl?.simulatePullToRefresh()
     }
     
+    func simulateErrorViewTap() {
+        errorView.simulateTap()
+    }
+    
+    private func prepareForFirstAppearance() {
+        replaceRefreshControlWithSpyForiOS17Support()
+    }
+    
+    private func replaceRefreshControlWithSpyForiOS17Support() {
+        let spyRefreshControl = UIRefreshControlSpy()
+        
+        refreshControl?.allTargets.forEach { target in
+            refreshControl?.actions(forTarget: target, forControlEvent: .valueChanged)?.forEach { action in
+                spyRefreshControl.addTarget(target, action: Selector(action), for: .valueChanged)
+            }
+        }
+        
+        refreshControl = spyRefreshControl
+    }
+}
+
+extension ListViewController {
     @discardableResult
     func simulateFeedImageViewVisible(at index: Int) -> FeedImageCell? {
         
@@ -108,30 +131,37 @@ extension ListViewController {
     private var feedImagesSection: Int {
         0
     }
-    
-    func simulateErrorViewTap() {
-        errorView.simulateTap()
-    }
-    
-    /*
-    func simulateTapOnErrorMessage() {
-        errorView?.button.simulateTap()
-    }
-    */
-    
-    private func prepareForFirstAppearance() {
-        replaceRefreshControlWithSpyForiOS17Support()
-    }
-    
-    private func replaceRefreshControlWithSpyForiOS17Support() {
-        let spyRefreshControl = UIRefreshControlSpy()
+}
 
-        refreshControl?.allTargets.forEach { target in
-            refreshControl?.actions(forTarget: target, forControlEvent: .valueChanged)?.forEach { action in
-                spyRefreshControl.addTarget(target, action: Selector(action), for: .valueChanged)
-            }
+extension ListViewController {
+    private var commentsSection: Int {
+        0
+    }
+    
+    func numberOfRenderedComments() -> Int {
+        tableView.numberOfSections == 0 ? 0 : tableView.numberOfRows(inSection: commentsSection)
+    }
+    
+    func commentMessage(at row: Int) -> String? {
+        commentView(at: row)?.messageLabel.text
+    }
+    
+    func commentDate(at row: Int) -> String? {
+        commentView(at: row)?.dateLabel.text
+    }
+    
+    func commentUserName(at row: Int) -> String? {
+        commentView(at: row)?.userNameLabel.text
+    }
+    
+    private func commentView(at row: Int) -> ImageCommentCell? {
+        guard numberOfRenderedComments() > row else {
+            return nil
         }
-
-        refreshControl = spyRefreshControl
+        
+        let ds = tableView.dataSource
+        let index = IndexPath(row: row, section: commentsSection)
+        
+        return ds?.tableView(tableView, cellForRowAt: index) as? ImageCommentCell
     }
 }
