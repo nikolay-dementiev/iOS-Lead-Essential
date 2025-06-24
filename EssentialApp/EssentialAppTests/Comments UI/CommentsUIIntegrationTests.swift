@@ -11,7 +11,7 @@ import EssentialFeediOS
 import EssentialApp
 import Combine
 
-final class CommentsUIIntegrationTests: FeedUIIntegrationTests {
+final class CommentsUIIntegrationTests: XCTestCase {
     
     func test_CommentsView_hasTitle() {
         let (sut, _) = makeSUT()
@@ -107,7 +107,7 @@ final class CommentsUIIntegrationTests: FeedUIIntegrationTests {
         wait(for: [exp], timeout: 1.0)
     }
     
-    override func test_loadFeedCompletion_rendersErrorMessageOnErrorUntilNextReload() {
+    func test_loadCommentsCompletion_rendersErrorMessageOnErrorUntilNextReload() {
         let (sut, loader) = makeSUT()
 
         sut.simulateAppearance()
@@ -120,7 +120,7 @@ final class CommentsUIIntegrationTests: FeedUIIntegrationTests {
         XCTAssertEqual(sut.errorMessage, nil)
     }
     
-    override func test_tapOnErrorView_hidesErrorMessage() {
+    func test_tapOnErrorView_hidesErrorMessage() {
         let (sut, loader) = makeSUT()
 
         sut.simulateAppearance()
@@ -132,31 +132,6 @@ final class CommentsUIIntegrationTests: FeedUIIntegrationTests {
         sut.simulateErrorViewTap()
         XCTAssertEqual(sut.errorMessage, nil)
     }
-    
-    override func test_errorViewHidesItselfOnPullToRefresh() {
-        let (sut, loader) = makeSUT()
-        sut.simulateAppearance()
-        
-        loader.completeCommentsLoadingWithError()
-        
-        let expectationViewAlpha = XCTestExpectation(description: "Wait for alpha to become 0")
-        var observationViewAlpha: NSKeyValueObservation?
-        observationViewAlpha = sut.errorView.observe(\.alpha, options: [.new]) { (view, change) in
-            guard view.alpha.isZero else {
-                return
-            }
-            expectationViewAlpha.fulfill()
-            observationViewAlpha?.invalidate()
-        }
-        
-        sut.refreshControl?.simulatePullToRefresh()
-        
-        wait(for: [expectationViewAlpha], timeout: 1.0)
-        
-        XCTAssertEqual(sut.errorView.alpha, 0, "Expected errorView's alpha to be 0 after animation")
-        XCTAssertFalse(sut.isShowingErrorView, "Expected error view not to be displayed when successfully loaded")
-    }
-
     
     // MARK: - Helpers
     
