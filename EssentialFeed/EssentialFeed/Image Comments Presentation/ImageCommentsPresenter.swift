@@ -10,7 +10,7 @@ public struct ImageCommentsViewModel {
     public let comments: [ImageCommentViewModel]
 }
 
-public struct ImageCommentViewModel: Equatable {
+public struct ImageCommentViewModel: Hashable {
     public let message: String
     public let date: String
     public let userName: String
@@ -23,14 +23,6 @@ public struct ImageCommentViewModel: Equatable {
         self.message = message
         self.date = date
         self.userName = userName
-    }
-}
-
-extension ImageCommentViewModel: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(message)
-        hasher.combine(date)
-        hasher.combine(userName)
     }
 }
 

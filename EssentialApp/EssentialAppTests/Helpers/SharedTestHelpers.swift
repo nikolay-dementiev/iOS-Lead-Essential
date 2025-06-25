@@ -22,3 +22,19 @@ func anyData() -> Data {
 func uniqueFeed() -> [FeedImage] {
     [FeedImage(id: UUID(), description: "any", location: "any", url: anyURL())]
 }
+
+var loadError: String {
+    LoadResourcePresenter<Any, DumyView>.loadError
+}
+
+var feedTitle: String {
+    FeedPresenter.title
+}
+
+private class DumyView: ResourceView {
+    func display(_ viewModel: Any) {}
+}
+
+var commentsTitle: String {
+    ImageCommentsPresenter.title
+}
