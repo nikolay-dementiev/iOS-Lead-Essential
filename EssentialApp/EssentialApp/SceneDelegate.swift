@@ -18,6 +18,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         .defaultDirectoryURL()
         .appendingPathComponent("feed-store.sqlite")
     
+    private lazy var navigationController = UINavigationController(
+        rootViewController: FeedUIComposer.feedComposedWith(
+            feedLoader: makeRemotfeedLoaderWithFallback,
+            imageLoader: makeLocalImageLoaderWithRemoteFallback,
+            selection: showComments(for:)
+        ))
+    private lazy var baseUrl: URL = URL(string: "https://ile-api.essentialdeveloper.com/essential-feed")!
+    
     private lazy var httpClient: HTTPClient = {
         URLSessionHTTPClient(session: URLSession(configuration: .ephemeral))
     }()
@@ -31,7 +39,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }()
     
     private lazy var remoteFeedLoader: Publishers.TryMap<AnyPublisher<(Data, HTTPURLResponse), any Error>, [FeedImage]> = {
-        let remoteURL = URL(string: "https://ile-api.essentialdeveloper.com/essential-feed/v1/feed" /*"https://static1.squarespace.com/static/5891c5b8d1758ec68ef5dbc2/t/5db4155a4fbade21d17ecd28/1572083034355/essential_app_feed.json"*/)!
+        let remoteURL = baseUrl.appendingPathComponent("/v1/feed")
         
         let remoteClient = makeRemoteClient()
         let remoteFeedLoader = remoteClient.getPublisher(url: remoteURL).tryMap(FeedItemsMapper.map)
@@ -53,12 +61,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func configureWindow() {
-        window?.rootViewController = UINavigationController(
-            rootViewController: FeedUIComposer.feedComposedWith(
-                feedLoader: makeRemotfeedLoaderWithFallback,
-                imageLoader: makeLocalImageLoaderWithRemoteFallback,
-                selection: { _ in fatalError("Feed selection not implemented") }
-            ))
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
     }
     
@@ -68,6 +71,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func sceneWillResignActive(_ scene: UIScene) {
         localFeedLoader.validateCache { _ in }
+    }
+    
+    private func showComments(for image: FeedImage) {
+        let remoteURL = baseUrl.appendingPathComponent("/v1/image/\(image.id)/comments")
+        
+        let comments = CommentsUIComposer.commentsComposedWith(
+            commentsLoader: makeRemoteCommentsLoader(for: remoteURL)
+        )
+        
+        navigationController.pushViewController(comments, animated: true)
+    }
+    
+    private func makeRemoteCommentsLoader(for url: URL) -> () -> AnyPublisher<[ImageComment], Error> {
+        { [httpClient] in
+            httpClient
+                .getPublisher(url: url)
+                .tryMap(ImageCommentsMapper.map)
+                .eraseToAnyPublisher()
+        }
     }
     
     private func makeRemotfeedLoaderWithFallback() -> AnyPublisher<[FeedImage], Error> {
