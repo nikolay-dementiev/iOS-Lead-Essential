@@ -12,6 +12,23 @@ import EssentialApp
 
 class FeedUIIntegrationTests: XCTestCase {
     
+    func test_imageSelection_notifiesHandler() {
+        let image0 = makeImage()
+        let image1 = makeImage()
+        
+        var selectedImages = [FeedImage]()
+        let (sut, loader) = makeSUT(selection: { selectedImages.append($0) })
+        
+        sut.simulateAppearance()
+        loader.completeFeedLoading(with: [image0, image1], at: 0)
+        
+        sut.simulateTapOnFeedImage(at: 0)
+        XCTAssertEqual(selectedImages, [image0])
+        
+        sut.simulateTapOnFeedImage(at: 1)
+        XCTAssertEqual(selectedImages, [image0, image1])
+    }
+    
     func test_feedView_hasTitle() {
         let (sut, _) = makeSUT()
         sut.simulateAppearance()
@@ -119,16 +136,16 @@ class FeedUIIntegrationTests: XCTestCase {
 //        let image0 = makeImage(url: URL(string: "http://url-0.com")!)
 //        let image1 = makeImage(url: URL(string: "http://url-1.com")!)
 //        let (sut, loader) = makeSUT()
-//        
+//
 //        sut.loadViewIfNeeded()
 //        loader.completeFeedLoading(with: [image0, image1])
-//        
+//
 //        sut.simulateFeedImageBecomingVisibleAgain(at: 0)
-//        
+//
 //        XCTAssertEqual(loader.loadedImageURLs, [image0.url, image0.url], "Expected two image URL request after first view becomes visible again")
-//        
+//
 //        sut.simulateFeedImageBecomingVisibleAgain(at: 1)
-//        
+//
 //        XCTAssertEqual(loader.loadedImageURLs, [image0.url, image0.url, image1.url, image1.url], "Expected two new image URL request after second view becomes visible again")
 //    }
     
@@ -267,19 +284,19 @@ class FeedUIIntegrationTests: XCTestCase {
     
 //    func test_feedImageView_configuresViewCorrectlyWhenCellBecomingVisibleAgain() {
 //        let (sut, loader) = makeSUT()
-//        
+//
 //        sut.loadViewIfNeeded()
 //        loader.completeFeedLoading(with: [makeImage()])
-//        
+//
 //        let view0 = sut.simulateFeedImageBecomingVisibleAgain(at: 0)
-//        
+//
 //        XCTAssertEqual(view0?.renderedImage, nil, "Expected no rendered image when view becomes visible again")
 //        XCTAssertEqual(view0?.isShowingRetryAction, false, "Expected no retry action when view becomes visible again")
 //        XCTAssertEqual(view0?.isShowingImageLoadingIndicator, true, "Expected loading indicator when view becomes visible again")
-//        
+//
 //        let imageData = UIImage.make(withColor: .red).pngData()!
 //        loader.completeImageLoading(with: imageData, at: 1)
-//        
+//
 //        XCTAssertEqual(view0?.renderedImage, imageData, "Expected rendered image when image loads successfully after view becomes visible again")
 //        XCTAssertEqual(view0?.isShowingRetryAction, false, "Expected no retry when image loads successfully after view becomes visible again")
 //        XCTAssertEqual(view0?.isShowingImageLoadingIndicator, false, "Expected no loading indicator when image loads successfully after view becomes visible again")
@@ -500,9 +517,17 @@ class FeedUIIntegrationTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: ListViewController, loader: LoaderSpy) {
-        let loader = LoaderSpy()  
-        let sut = FeedUIComposer.feedComposedWith(feedLoader: loader.loadPublisher, imageLoader: loader.loadImageDataPublisher)
+    private func makeSUT(
+        selection: @escaping (FeedImage) -> Void = { _ in },
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> (sut: ListViewController, loader: LoaderSpy) {
+        let loader = LoaderSpy()
+        let sut = FeedUIComposer.feedComposedWith(
+            feedLoader: loader.loadPublisher,
+            imageLoader: loader.loadImageDataPublisher,
+            selection: selection
+        )
         trackForMemoryLeaks(loader, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, loader)

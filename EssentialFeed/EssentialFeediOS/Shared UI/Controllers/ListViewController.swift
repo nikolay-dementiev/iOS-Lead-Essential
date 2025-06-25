@@ -119,6 +119,10 @@ public final class ListViewController: UITableViewController, UITableViewDataSou
         }
     }
     
+    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        cellController(at: indexPath)?.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
+    }
+    
     private func configureErrorView() {
         errorView.onHide = { [weak self] in
             self?.tableView.beginUpdates()
