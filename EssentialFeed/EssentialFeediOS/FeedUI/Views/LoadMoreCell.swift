@@ -20,6 +20,26 @@ public class LoadMoreCell: UITableViewCell {
 		return spinner
 	}()
     
+    private lazy var mesageLabel: UILabel = {
+        let mesageLabel = UILabel()
+        mesageLabel.textColor = .tertiaryLabel
+        mesageLabel.font = .preferredFont(forTextStyle: .footnote)
+        mesageLabel.numberOfLines = 0
+        mesageLabel.textAlignment = .center
+        mesageLabel.adjustsFontForContentSizeCategory = true
+        
+        contentView.addSubview(mesageLabel)
+        mesageLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            mesageLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            contentView.trailingAnchor.constraint(equalTo: mesageLabel.trailingAnchor, constant: 8),
+            mesageLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            contentView.bottomAnchor.constraint(equalTo: mesageLabel.bottomAnchor, constant: 8)
+        ])
+        
+        return mesageLabel
+    }()
+    
     public var isLoading: Bool {
         get { spinner.isAnimating }
         set {
@@ -29,5 +49,10 @@ public class LoadMoreCell: UITableViewCell {
                 spinner.stopAnimating()
             }
         }
+    }
+    
+    public var message: String? {
+        get { mesageLabel.text }
+        set { mesageLabel.text = newValue }
     }
 }
