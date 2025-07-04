@@ -172,7 +172,7 @@ extension ListViewController {
 }
 
 extension ListViewController {
-    func simulatLoadMoreFeedAction() {
+    func simulateLoadMoreFeedAction() {
         guard let cell = cell(row: 0, section: feedLoadMoreSection) else {
             return
         }
@@ -183,5 +183,14 @@ extension ListViewController {
     
     private var feedLoadMoreSection: Int {
         1
+    }
+    
+    var isShowingLoadMoreFeedIndicator: Bool {
+        let view = loadMoreFeedCell()
+        return view?.isLoading == true
+    }
+    
+    private func loadMoreFeedCell() -> LoadMoreCell? {
+        cell(row: 0, section: feedLoadMoreSection) as? LoadMoreCell
     }
 }
