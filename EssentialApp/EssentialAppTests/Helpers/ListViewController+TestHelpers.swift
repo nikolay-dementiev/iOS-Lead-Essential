@@ -69,14 +69,12 @@ extension ListViewController {
         refreshControl = spyRefreshControl
     }
     
-    func cell(at row: Int, section: Int) -> UITableViewCell? {
-        guard numberOfRenderedViews(inSection: section) > row else {
+    private func cell(row: Int, section: Int) -> UITableViewCell? {
+        guard numberOfRows(inSection: section) > row else {
             return nil
         }
-        
         let ds = tableView.dataSource
         let index = IndexPath(row: row, section: section)
-        
         return ds?.tableView(tableView, cellForRowAt: index)
     }
 }
@@ -130,16 +128,16 @@ extension ListViewController {
         ds?.tableView?(tableView, cancelPrefetchingForRowsAt: [index])
     }
     
-    private func numberOfRenderedViews(inSection section: Int) -> Int {
-        tableView.numberOfSections == 0 ? 0 : tableView.numberOfRows(inSection: section)
+    private func numberOfRows(inSection section: Int) -> Int {
+        tableView.numberOfSections > section ? tableView.numberOfRows(inSection: section) : 0
     }
     
     func numberOfRenderedFeedImageViews() -> Int {
-        numberOfRenderedViews(inSection: feedImagesSection)
+        numberOfRows(inSection: feedImagesSection)
     }
     
     func feedImageView(at row: Int) -> UITableViewCell? {
-        cell(at: row, section: feedImagesSection)
+        cell(row: row, section: feedImagesSection)
     }
     
     private var feedImagesSection: Int {
@@ -153,7 +151,7 @@ extension ListViewController {
     }
     
     func numberOfRenderedComments() -> Int {
-        numberOfRenderedViews(inSection: commentsSection)
+        numberOfRows(inSection: commentsSection)
     }
     
     func commentMessage(at row: Int) -> String? {
@@ -169,13 +167,21 @@ extension ListViewController {
     }
     
     private func commentView(at row: Int) -> ImageCommentCell? {
-        guard numberOfRenderedComments() > row else {
-            return nil
+        cell(row: row, section: commentsSection) as? ImageCommentCell
+    }
+}
+
+extension ListViewController {
+    func simulatLoadMoreFeedAction() {
+        guard let cell = cell(row: 0, section: feedLoadMoreSection) else {
+            return
         }
-        
-        let ds = tableView.dataSource
-        let index = IndexPath(row: row, section: commentsSection)
-        
-        return ds?.tableView(tableView, cellForRowAt: index) as? ImageCommentCell
+        let delegate = tableView.delegate
+        let index = IndexPath(row: 0, section: feedLoadMoreSection)
+        delegate?.tableView?(tableView, willDisplay: cell, forRowAt: index)
+    }
+    
+    private var feedLoadMoreSection: Int {
+        1
     }
 }
