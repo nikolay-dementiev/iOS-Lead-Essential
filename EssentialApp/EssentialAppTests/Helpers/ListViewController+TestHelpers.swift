@@ -68,6 +68,17 @@ extension ListViewController {
         
         refreshControl = spyRefreshControl
     }
+    
+    func cell(at row: Int, section: Int) -> UITableViewCell? {
+        guard numberOfRenderedViews(inSection: section) > row else {
+            return nil
+        }
+        
+        let ds = tableView.dataSource
+        let index = IndexPath(row: row, section: section)
+        
+        return ds?.tableView(tableView, cellForRowAt: index)
+    }
 }
 
 extension ListViewController {
@@ -119,19 +130,16 @@ extension ListViewController {
         ds?.tableView?(tableView, cancelPrefetchingForRowsAt: [index])
     }
     
+    private func numberOfRenderedViews(inSection section: Int) -> Int {
+        tableView.numberOfSections == 0 ? 0 : tableView.numberOfRows(inSection: section)
+    }
+    
     func numberOfRenderedFeedImageViews() -> Int {
-        tableView.numberOfSections == 0 ? 0 : tableView.numberOfRows(inSection: feedImagesSection)
+        numberOfRenderedViews(inSection: feedImagesSection)
     }
     
     func feedImageView(at row: Int) -> UITableViewCell? {
-        guard numberOfRenderedFeedImageViews() > row else {
-            return nil
-        }
-        
-        let ds = tableView.dataSource
-        let index = IndexPath(row: row, section: feedImagesSection)
-        
-        return ds?.tableView(tableView, cellForRowAt: index)
+        cell(at: row, section: feedImagesSection)
     }
     
     private var feedImagesSection: Int {
@@ -145,7 +153,7 @@ extension ListViewController {
     }
     
     func numberOfRenderedComments() -> Int {
-        tableView.numberOfSections == 0 ? 0 : tableView.numberOfRows(inSection: commentsSection)
+        numberOfRenderedViews(inSection: commentsSection)
     }
     
     func commentMessage(at row: Int) -> String? {
