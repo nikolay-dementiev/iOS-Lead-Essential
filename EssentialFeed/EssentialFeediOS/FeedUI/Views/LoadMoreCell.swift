@@ -11,11 +11,14 @@ public class LoadMoreCell: UITableViewCell {
 		let spinner = UIActivityIndicatorView(style: .medium)
 		contentView.addSubview(spinner)
         spinner.translatesAutoresizingMaskIntoConstraints = false
+        
+        let contentViewHeight = contentView.heightAnchor.constraint(lessThanOrEqualToConstant: 40)
         NSLayoutConstraint.activate([
             spinner.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             spinner.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            contentView.heightAnchor.constraint(lessThanOrEqualToConstant: 40)
+            contentViewHeight
         ])
+        contentViewHeight.priority = .defaultLow
         
 		return spinner
 	}()
