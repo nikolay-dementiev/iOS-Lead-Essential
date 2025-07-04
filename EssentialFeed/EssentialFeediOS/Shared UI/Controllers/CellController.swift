@@ -14,26 +14,12 @@ public struct CellController {
     
     public init(
         id: AnyHashable,
-        dataSource: UITableViewDataSource,
-        delegate: UITableViewDelegate? = nil,
-        dataSourcePrefetching: UITableViewDataSourcePrefetching? = nil
+        _ dataSource: UITableViewDataSource
     ) {
         self.id = id
         self.dataSource = dataSource
-        self.delegate = delegate
-        self.dataSourcePrefetching = dataSourcePrefetching
-    }
-    
-    public init(
-        id: AnyHashable,
-        _ dataSource: UITableViewDataSource & UITableViewDelegate & UITableViewDataSourcePrefetching
-    ) {
-        self.init(
-            id: id,
-            dataSource: dataSource,
-            delegate: dataSource,
-            dataSourcePrefetching: dataSource
-        )
+        self.delegate = dataSource as? UITableViewDelegate
+        self.dataSourcePrefetching = dataSource as? UITableViewDataSourcePrefetching
     }
 }
 

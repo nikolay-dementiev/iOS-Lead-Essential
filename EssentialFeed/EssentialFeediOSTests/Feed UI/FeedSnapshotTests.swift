@@ -122,13 +122,8 @@ class FeedSnapshotTests: XCTestCase {
         stub.controller = cellController
         
         return [
-            CellController(
-                id: UUID(),
-                dataSource: cellController
-            ),
-            CellController(
-                id: UUID(),
-                dataSource: loadMore)
+            CellController(id: UUID(), cellController),
+            CellController(id: UUID(), loadMore)
         ]
     }
 }

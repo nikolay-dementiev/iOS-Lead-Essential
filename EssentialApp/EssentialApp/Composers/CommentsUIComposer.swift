@@ -51,8 +51,7 @@ final class CommentsViewAdapter: ResourceView {
         controller?.display(
             viewModel.comments.map { model in
                 CellController(
-                    id: model,
-                    dataSource: ImageCommentCellController(model: model)
+                    id: model, ImageCommentCellController(model: model)
                 )
             })
     }
