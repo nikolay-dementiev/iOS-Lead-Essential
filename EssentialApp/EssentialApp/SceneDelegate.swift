@@ -37,7 +37,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private lazy var localFeedLoader: LocalFeedLoader = {
         LocalFeedLoader(store: store, currentDate: Date.init)
     }()
-
+    
     convenience init(httpClient: HTTPClient, store: FeedStore & FeedImageDataStore) {
         self.init()
         self.httpClient = httpClient
@@ -84,52 +84,48 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func makeRemoteFeedLoaderWithLocalFallback() -> AnyPublisher<Paginated<FeedImage>, Error> {
-        let remoteURL = FeedEndpoint.get().url(baseURL: baseURL)
-        
-        return makeRemoteClient()
-            .getPublisher(url: remoteURL)
-            .tryMap(FeedItemsMapper.map)
+        makeRemoteFeedLoader()
             .caching(to: localFeedLoader)
             .fallback(to: localFeedLoader.loadPublisher)
-            .map { items in
-                Paginated(
-                    items: items,
-                    loadMorePublisher: self.makeRemoteLoadMoreLoader(
-                        items: items,
-                        last: items.last
-                    )
-                )
-            }
+            .map(makeFirstPage)
             .eraseToAnyPublisher()
     }
     
-    private func makeRemoteLoadMoreLoader(items: [FeedImage], last: FeedImage?) -> (() -> AnyPublisher<Paginated<FeedImage>, Error>)? {
+    private func makeRemoteLoadMoreLoader(items: [FeedImage], last: FeedImage?) -> AnyPublisher<Paginated<FeedImage>, Error> {
         
-        last.map { lastItem in
-            let remoteURL = FeedEndpoint.get(after: lastItem).url(baseURL: baseURL)
-            
-            return { [self] in
-                self.makeRemoteClient()
-                    .getPublisher(url: remoteURL)
-                    .tryMap(FeedItemsMapper.map)
-                    .map { [weak self, items] newitems in
-                        let paginatedItems = items + newitems
-                        return Paginated(
-                            items: paginatedItems,
-                            loadMorePublisher: self?.makeRemoteLoadMoreLoader(
-                                items: paginatedItems,
-                                last: newitems.last
-                            )
-                        )
-                    }
-                    .caching(to: localFeedLoader)
-                    .eraseToAnyPublisher()
+        makeRemoteFeedLoader(after: last)
+            .map { newItems in
+                (items + newItems, newItems.last)
             }
-        }
+            .map(makePage)
+            .caching(to: localFeedLoader)
+            .eraseToAnyPublisher()
+    }
+    
+    private func makeRemoteFeedLoader(after: FeedImage? = nil) -> AnyPublisher<[FeedImage], Error> {
+        
+        let remoteURL = FeedEndpoint.get(after: after).url(baseURL: baseURL)
+        
+        return self.makeRemoteClient()
+            .getPublisher(url: remoteURL)
+            .tryMap(FeedItemsMapper.map)
+            .eraseToAnyPublisher()
+    }
+    
+    private func makePage(items: [FeedImage], last: FeedImage? = nil) -> Paginated<FeedImage> {
+        Paginated(
+            items: items,
+            loadMorePublisher: last.map { last in { self.makeRemoteLoadMoreLoader(items: items, last: last) }
+            }
+        )
+    }
+    
+    private func makeFirstPage(items: [FeedImage]) -> Paginated<FeedImage> {
+        makePage(items: items, last: items.last)
     }
     
     private func makeLocalImageLoaderWithRemoteFallback(url: URL) -> FeedImageDataLoader.Publisher {
-//        let remoteImageLoader = RemoteFeedImageDataLoader(client: httpClient)
+        //        let remoteImageLoader = RemoteFeedImageDataLoader(client: httpClient)
         let remoteImageLoader = httpClient
             .getPublisher(url: url)
             .tryMap(FeedImageDataMapper.map)
@@ -139,7 +135,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             .loadImageDataPublisher(from: url)
             .fallback(to: {
                 remoteImageLoader
-//                    .loadImageDataPublisher(from: url)
+                //                    .loadImageDataPublisher(from: url)
                     .caching(to: localImageLoader, using: url)
             })
     }
