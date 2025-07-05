@@ -20,11 +20,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     private lazy var navigationController = UINavigationController(
         rootViewController: FeedUIComposer.feedComposedWith(
-            feedLoader: makeRemotfeedLoaderWithFallback,
+            feedLoader: makeRemoteFeedLoaderWithLocalFallback,
             imageLoader: makeLocalImageLoaderWithRemoteFallback,
             selection: showComments(for:)
         ))
-    private lazy var baseUrl: URL = URL(string: "https://ile-api.essentialdeveloper.com/essential-feed")!
+    private lazy var baseURL: URL = URL(string: "https://ile-api.essentialdeveloper.com/essential-feed")!
     
     private lazy var httpClient: HTTPClient = {
         URLSessionHTTPClient(session: URLSession(configuration: .ephemeral))
@@ -39,10 +39,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }()
     
     private lazy var remoteFeedLoader: Publishers.TryMap<AnyPublisher<(Data, HTTPURLResponse), any Error>, [FeedImage]> = {
-        let remoteURL = baseUrl.appendingPathComponent("/v1/feed")
+        let remoteURL = FeedEndpoint.get.url(baseURL: baseURL)
         
-        let remoteClient = makeRemoteClient()
-        let remoteFeedLoader = remoteClient.getPublisher(url: remoteURL).tryMap(FeedItemsMapper.map)
+        let remoteFeedLoader = makeRemoteClient()
+            .getPublisher(url: remoteURL)
+            .tryMap(FeedItemsMapper.map)
         
         return remoteFeedLoader
     }()
@@ -74,7 +75,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func showComments(for image: FeedImage) {
-        let remoteURL = baseUrl.appendingPathComponent("/v1/image/\(image.id)/comments")
+        let remoteURL = baseURL.appendingPathComponent("/v1/image/\(image.id)/comments")
         
         let comments = CommentsUIComposer.commentsComposedWith(
             commentsLoader: makeRemoteCommentsLoader(for: remoteURL)
@@ -92,7 +93,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
     
-    private func makeRemotfeedLoaderWithFallback() -> AnyPublisher<Paginated<FeedImage>, Error> {
+    private func makeRemoteFeedLoaderWithLocalFallback() -> AnyPublisher<Paginated<FeedImage>, Error> {
         return remoteFeedLoader
             .caching(to: localFeedLoader)
             .fallback(to: localFeedLoader.loadPublisher)
