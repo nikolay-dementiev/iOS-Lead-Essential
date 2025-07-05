@@ -37,17 +37,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private lazy var localFeedLoader: LocalFeedLoader = {
         LocalFeedLoader(store: store, currentDate: Date.init)
     }()
-    
-//    private lazy var remoteFeedLoader: Publishers.TryMap<AnyPublisher<(Data, HTTPURLResponse), any Error>, [FeedImage]> = {
-//        let remoteURL = FeedEndpoint.get().url(baseURL: baseURL)
-//        
-//        let remoteFeedLoader = makeRemoteClient()
-//            .getPublisher(url: remoteURL)
-//            .tryMap(FeedItemsMapper.map)
-//        
-//        return remoteFeedLoader
-//    }()
-//    
+
     convenience init(httpClient: HTTPClient, store: FeedStore & FeedImageDataStore) {
         self.init()
         self.httpClient = httpClient
@@ -131,7 +121,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                 last: newitems.last
                             )
                         )
-                    }.eraseToAnyPublisher()
+                    }
+                    .caching(to: localFeedLoader)
+                    .eraseToAnyPublisher()
             }
         }
     }
