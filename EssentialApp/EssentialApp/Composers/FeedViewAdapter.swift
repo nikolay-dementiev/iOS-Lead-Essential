@@ -15,6 +15,7 @@ final class FeedViewAdapter: ResourceView {
     private let selection: (FeedImage) -> Void
     
     private typealias ImageDataPresentationAdapter = LoadResourcePresentationAdapter<Data, WeakRefVirtualProxy<FeedImageCellController>>
+    private typealias LoadMorePresentationAdapter = LoadResourcePresentationAdapter<Paginated<FeedImage>, FeedViewAdapter>
     
     init(controller: ListViewController,
          imageLoader: @escaping (URL) -> FeedImageDataLoader.Publisher,
@@ -24,38 +25,55 @@ final class FeedViewAdapter: ResourceView {
         self.selection = selection
     }
     
-    func display(_ viewModel: FeedViewModel) {
-        controller?.display(
-            viewModel.feed
-                .map { model in
-                    //REMOVE
-                    //let adapter = FeedImageDataLoaderPresentationAdapter<WeakRefVirtualProxy<FeedImageCellController>, UIImage>(model: model, imageLoader: imageLoader)
-                    
-                    let adapter = ImageDataPresentationAdapter(loader: { [imageLoader] in
-                        imageLoader(model.url)
-                    })
-                    
-                    let view = FeedImageCellController(
-                        viewModel: FeedImagePresenter.map(model),
-                        delegate: adapter,
-                        selection: { [selection] in
-                            selection(model)
-                        }
-                    )
-                    
-                    adapter.presenter = LoadResourcePresenter<Data, WeakRefVirtualProxy>(
-                        resourceView: WeakRefVirtualProxy(view),
-                        loadingView: WeakRefVirtualProxy(view),
-                        errorView: WeakRefVirtualProxy(view),
-                        mapper: UIImage.tryMake(data:))
-                    
-                    return CellController(
-                        id: model,
-                        dataSource: view,
-                        delegate: view,
-                        dataSourcePrefetching: view
-                    )
+    func display(_ viewModel: Paginated<FeedImage>) {
+        let feed: [CellController] = viewModel.items
+            .map { model in
+                //REMOVE
+                //let adapter = FeedImageDataLoaderPresentationAdapter<WeakRefVirtualProxy<FeedImageCellController>, UIImage>(model: model, imageLoader: imageLoader)
+                
+                let adapter = ImageDataPresentationAdapter(loader: { [imageLoader] in
+                    imageLoader(model.url)
                 })
+                
+                let view = FeedImageCellController(
+                    viewModel: FeedImagePresenter.map(model),
+                    delegate: adapter,
+                    selection: { [selection] in
+                        selection(model)
+                    }
+                )
+                
+                adapter.presenter = LoadResourcePresenter<Data, WeakRefVirtualProxy>(
+                    resourceView: WeakRefVirtualProxy(view),
+                    loadingView: WeakRefVirtualProxy(view),
+                    errorView: WeakRefVirtualProxy(view),
+                    mapper: UIImage.tryMake(data:))
+                
+                return CellController(id: model, view)
+            }
+        
+        guard let loadMorePublisher = viewModel.loadMorePublisher else {
+            controller?.display(feed)
+            return
+        }
+        
+        let loadMoreAdater = LoadMorePresentationAdapter(loader: loadMorePublisher)
+        let loadMore = LoadMoreCellController(callback: loadMoreAdater.loadResource)
+        loadMoreAdater.presenter = LoadResourcePresenter(
+            resourceView: self,
+            loadingView: WeakRefVirtualProxy(loadMore),
+            errorView: WeakRefVirtualProxy(loadMore),
+            mapper: { $0 })
+        
+        
+        let loadMoreSection = [
+            CellController(
+                id: UUID(),
+                loadMore
+            )
+        ]
+        
+        controller?.display(feed, loadMoreSection)
     }
 }
 

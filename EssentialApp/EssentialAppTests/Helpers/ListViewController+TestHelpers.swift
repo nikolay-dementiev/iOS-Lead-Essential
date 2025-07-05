@@ -68,6 +68,15 @@ extension ListViewController {
         
         refreshControl = spyRefreshControl
     }
+    
+    private func cell(row: Int, section: Int) -> UITableViewCell? {
+        guard numberOfRows(inSection: section) > row else {
+            return nil
+        }
+        let ds = tableView.dataSource
+        let index = IndexPath(row: row, section: section)
+        return ds?.tableView(tableView, cellForRowAt: index)
+    }
 }
 
 extension ListViewController {
@@ -119,19 +128,16 @@ extension ListViewController {
         ds?.tableView?(tableView, cancelPrefetchingForRowsAt: [index])
     }
     
+    private func numberOfRows(inSection section: Int) -> Int {
+        tableView.numberOfSections > section ? tableView.numberOfRows(inSection: section) : 0
+    }
+    
     func numberOfRenderedFeedImageViews() -> Int {
-        tableView.numberOfSections == 0 ? 0 : tableView.numberOfRows(inSection: feedImagesSection)
+        numberOfRows(inSection: feedImagesSection)
     }
     
     func feedImageView(at row: Int) -> UITableViewCell? {
-        guard numberOfRenderedFeedImageViews() > row else {
-            return nil
-        }
-        
-        let ds = tableView.dataSource
-        let index = IndexPath(row: row, section: feedImagesSection)
-        
-        return ds?.tableView(tableView, cellForRowAt: index)
+        cell(row: row, section: feedImagesSection)
     }
     
     private var feedImagesSection: Int {
@@ -145,7 +151,7 @@ extension ListViewController {
     }
     
     func numberOfRenderedComments() -> Int {
-        tableView.numberOfSections == 0 ? 0 : tableView.numberOfRows(inSection: commentsSection)
+        numberOfRows(inSection: commentsSection)
     }
     
     func commentMessage(at row: Int) -> String? {
@@ -161,13 +167,44 @@ extension ListViewController {
     }
     
     private func commentView(at row: Int) -> ImageCommentCell? {
-        guard numberOfRenderedComments() > row else {
-            return nil
+        cell(row: row, section: commentsSection) as? ImageCommentCell
+    }
+}
+
+extension ListViewController {
+    func simulateLoadMoreFeedAction() {
+        guard let cell = loadMoreFeedCell() else {
+            return
         }
-        
-        let ds = tableView.dataSource
-        let index = IndexPath(row: row, section: commentsSection)
-        
-        return ds?.tableView(tableView, cellForRowAt: index) as? ImageCommentCell
+        let delegate = tableView.delegate
+        let index = IndexPath(row: 0, section: feedLoadMoreSection)
+        delegate?.tableView?(tableView, willDisplay: cell, forRowAt: index)
+    }
+    
+    private var feedLoadMoreSection: Int {
+        1
+    }
+    
+    var loadMoreFeedErrorMessage: String? {
+        loadMoreFeedCell()?.message
+    }
+    
+    var isShowingLoadMoreFeedIndicator: Bool {
+        let view = loadMoreFeedCell()
+        return view?.isLoading == true
+    }
+    
+    var canLoadMoreFeed: Bool {
+        loadMoreFeedCell() != nil
+    }
+    
+    private func loadMoreFeedCell() -> LoadMoreCell? {
+        cell(row: 0, section: feedLoadMoreSection) as? LoadMoreCell
+    }
+    
+    func simulateTapOnLoadMoreFeedError() {
+        let delegate = tableView.delegate
+        let index = IndexPath(row: 0, section: feedLoadMoreSection)
+        delegate?.tableView?(tableView, didSelectRowAt: index)
     }
 }
