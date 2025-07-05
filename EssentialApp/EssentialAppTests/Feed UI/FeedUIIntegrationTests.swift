@@ -430,83 +430,6 @@ class FeedUIIntegrationTests: XCTestCase {
         XCTAssertEqual(sut.errorMessage, nil)
     }
     
-    /*
-    func test_errorView_dismissesErrorMessageOnTap() {
-        let (sut, loader) = makeSUT()
-
-        sut.simulateAppearance()
-        XCTAssertEqual(sut.errorMessage, nil)
-
-        loader.completeFeedLoadingWithError(at: 0)
-        XCTAssertEqual(sut.errorMessage, localized("GENERIC_CONNECTION_ERROR"))
-
-        sut.simulateTapOnErrorMessage()
-        XCTAssertEqual(sut.errorMessage, nil)
-    }
-    */
-    
-    /*
-    func test_errorViewWithActionButtonConnectedAndConfigured() {
-        let (sut, _) = makeSUT()
-        sut.simulateAppearance()
-        
-        XCTAssertNotNil(sut.errorView, "Expected `Error View` should be connected to the `FeedViewController`")
-        
-        let errorView: ErrorView? = findView(in: sut.view)
-        XCTAssertNotNil(errorView, "Expected `Error View` should exist in view hierarhy of the `FeedViewController`")
-        
-        let actionButton = errorView?.button
-        XCTAssertNotNil(actionButton, "Button should be connected in `Error View`")
-        
-        let actions = actionButton?.actions(forTarget: errorView, forControlEvent: .touchUpInside)
-        XCTAssertTrue(actions?.contains("hideMessage") == true, "Button should be connected to hideMessage action")
-    }
-    
-    func test_errorViewDoesNotDisplayErrorInitiallyAndOnSuccessCaseAndInsteadDisplaysOnError() {
-        let (sut, loader) = makeSUT()
-        sut.simulateAppearance()
-        XCTAssertFalse(sut.isShowingErrorView, "Expected error view not to be displayed initially")
-        
-        loader.completeFeedLoading(with: [makeImage()])
-        XCTAssertFalse(sut.isShowingErrorView, "Expected error view not to be displayed when successfully loaded")
-        
-        loader.completeFeedLoadingWithError()
-        XCTAssertTrue(sut.isShowingErrorView, "Expected error view to be displayed when loaded fails with error")
-    }
-    
-    func test_errorViewDisplayErrorTextWhenLoadFails() {
-        let (sut, loader) = makeSUT()
-        sut.simulateAppearance()
-        loader.completeFeedLoadingWithError()
-        
-        let errorView: ErrorView? = findView(in: sut.view)
-        XCTAssertEqual(errorView?.message,
-                       localized("GENERIC_CONNECTION_ERROR"),
-                       "Expected error view to display localized error text")
-    }
-    
-    func test_errorViewHidesItselfOnButtonTap() {
-        let (sut, loader) = makeSUT()
-        sut.simulateAppearance()
-        
-        loader.completeFeedLoadingWithError()
-        
-        let expectationViewAlpha = XCTestExpectation(description: "Wait for alpha to become 0")
-        var observationViewAlpha: NSKeyValueObservation?
-        observationViewAlpha = sut.errorView?.observe(\.alpha, options: [.new]) { (view, change) in
-            guard view.alpha.isZero else {
-                return
-            }
-            expectationViewAlpha.fulfill()
-            observationViewAlpha?.invalidate()
-        }
-        sut.errorView?.button.simulateTap()
-        wait(for: [expectationViewAlpha], timeout: 1.0)
-        
-        XCTAssertEqual(sut.errorView?.alpha, 0, "Expected errorView's alpha to be 0 after animation")
-    }
-    */
-    
     func test_errorViewHidesItselfOnPullToRefresh() {
         let (sut, loader) = makeSUT()
         sut.simulateAppearance()
@@ -548,7 +471,22 @@ class FeedUIIntegrationTests: XCTestCase {
         loader.completeFeedLoading(with: [], at: 1)
         assertThat(sut, isRendering: [])
     }
+    
+    func test_loadMoreCompletion_rendersErrorMessageOnError() {
+        let (sut, loader) = makeSUT()
 
+        sut.simulateAppearance()
+        loader.completeFeedLoading()
+        
+        sut.simulateLoadMoreFeedAction()
+        XCTAssertEqual(sut.loadMoreFeedErrorMessage, nil)
+
+        loader.completeLoadMoreWithError()
+        XCTAssertEqual(sut.loadMoreFeedErrorMessage, loadError)
+
+        sut.simulateLoadMoreFeedAction()
+        XCTAssertEqual(sut.loadMoreFeedErrorMessage, nil)
+    }
     
     // MARK: - Helpers
     
