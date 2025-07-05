@@ -39,7 +39,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }()
     
     private lazy var remoteFeedLoader: Publishers.TryMap<AnyPublisher<(Data, HTTPURLResponse), any Error>, [FeedImage]> = {
-        let remoteURL = FeedEndpoint.get.url(baseURL: baseURL)
+        let remoteURL = FeedEndpoint.get().url(baseURL: baseURL)
         
         let remoteFeedLoader = makeRemoteClient()
             .getPublisher(url: remoteURL)
