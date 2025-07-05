@@ -14,8 +14,4 @@ public final class FeedPresenter {
                           bundle: Bundle(for: Self.self),
                           comment: "Title for the Feed view")
     }
-    
-    public static func map(_ feed: [FeedImage]) -> FeedViewModel {
-        FeedViewModel(feed: feed)
-    }
 }
