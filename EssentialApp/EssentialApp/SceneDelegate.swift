@@ -31,7 +31,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }()
     
     private lazy var store: FeedStore & FeedImageDataStore = {
-        try! CoreDataFeedStore(storeURL: localStoreURL)
+        do {
+            return try CoreDataFeedStore(storeURL: localStoreURL)
+        } catch {
+            return NullStore()
+        }
     }()
     
     private lazy var localFeedLoader: LocalFeedLoader = {
@@ -99,10 +103,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 (cachedItem + newItems, newItems.last)
             }
             .map(makePage)
-//            .delay(for: 2, scheduler: DispatchQueue.main)
-//            .flatMap { _ in
-//                Fail(error: NSError())
-//            }
+         /*
+            .delay(for: 2, scheduler: DispatchQueue.main)
+            .flatMap { _ in
+                Fail(error: NSError())
+            }
+         */
             .caching(to: localFeedLoader)
             .eraseToAnyPublisher()
     }
