@@ -4,6 +4,7 @@
 //  Created by Mykola Dementiev
 //
 
+import os
 import UIKit
 import EssentialFeed
 import EssentialFeediOS
@@ -31,12 +32,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }()
     
     private lazy var store: FeedStore & FeedImageDataStore = {
-        try! CoreDataFeedStore(storeURL: localStoreURL)
+        do {
+            return try CoreDataFeedStore(storeURL: localStoreURL)
+        } catch {
+            assertionFailure("Failed to instantiate CoreData store with error: \(error.localizedDescription)")
+            logger.fault("Failed to instantiate CoreData store with error: \(error.localizedDescription)")
+            return NullStore()
+        }
     }()
     
     private lazy var localFeedLoader: LocalFeedLoader = {
         LocalFeedLoader(store: store, currentDate: Date.init)
     }()
+    
+    private lazy var logger = Logger(
+        subsystem: "com.essentialdeveloper.EssentialAppCaseStudy",
+        category: "main"
+    )
     
     convenience init(httpClient: HTTPClient, store: FeedStore & FeedImageDataStore) {
         self.init()
@@ -99,10 +111,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 (cachedItem + newItems, newItems.last)
             }
             .map(makePage)
-//            .delay(for: 2, scheduler: DispatchQueue.main)
-//            .flatMap { _ in
-//                Fail(error: NSError())
-//            }
+         /*
+            .delay(for: 2, scheduler: DispatchQueue.main)
+            .flatMap { _ in
+                Fail(error: NSError())
+            }
+         */
             .caching(to: localFeedLoader)
             .eraseToAnyPublisher()
     }
@@ -131,7 +145,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     private func makeLocalImageLoaderWithRemoteFallback(url: URL) -> FeedImageDataLoader.Publisher {
         //        let remoteImageLoader = RemoteFeedImageDataLoader(client: httpClient)
-        let remoteImageLoader = httpClient
+        
+//        let client = httpClient
+        let client = HTTPClientProfilingDecorator(
+            decoratee: httpClient,
+            logger: logger
+        )
+        
+        let remoteImageLoader = client
             .getPublisher(url: url)
             .tryMap(FeedImageDataMapper.map)
         let localImageLoader = LocalFeedImageDataLoader(store: store)
@@ -147,3 +168,33 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 }
 
 //REMOVE:extension RemoteLoader: @retroactive FeedLoader where Resource == [FeedImage] {}
+
+
+private class HTTPClientProfilingDecorator: HTTPClient {
+    private let decoratee: HTTPClient
+    private let logger: Logger
+    
+    init(decoratee: HTTPClient,
+         logger: Logger) {
+        self.decoratee = decoratee
+        self.logger = logger
+    }
+    
+    func get(
+        from url: URL,
+        completion: @escaping (HTTPClient.Result) -> Void
+    ) -> any EssentialFeed.HTTPClientTask {
+        logger.trace("Started loading url: \(url)")
+        
+        let startTime = CACurrentMediaTime()
+        return decoratee.get(from: url, completion: { [logger] result in
+            if case let .failure(error) = result {
+                logger.trace("Failed to load url: \(url): \(error.localizedDescription)")
+            }
+            let elapsedTime = CACurrentMediaTime() - startTime
+            logger.trace("Finished loading url: \(url) in \(elapsedTime) seconds")
+            
+            completion(result)
+        })
+    }
+}
