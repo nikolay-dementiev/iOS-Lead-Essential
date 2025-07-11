@@ -145,7 +145,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     private func makeLocalImageLoaderWithRemoteFallback(url: URL) -> FeedImageDataLoader.Publisher {
         //        let remoteImageLoader = RemoteFeedImageDataLoader(client: httpClient)
-        let remoteImageLoader = httpClient
+        
+//        let client = httpClient
+        let client = HTTPClientProfilingDecorator(
+            decoratee: httpClient,
+            logger: logger
+        )
+        
+        let remoteImageLoader = client
             .getPublisher(url: url)
             .tryMap(FeedImageDataMapper.map)
         let localImageLoader = LocalFeedImageDataLoader(store: store)
@@ -161,3 +168,33 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 }
 
 //REMOVE:extension RemoteLoader: @retroactive FeedLoader where Resource == [FeedImage] {}
+
+
+private class HTTPClientProfilingDecorator: HTTPClient {
+    private let decoratee: HTTPClient
+    private let logger: Logger
+    
+    init(decoratee: HTTPClient,
+         logger: Logger) {
+        self.decoratee = decoratee
+        self.logger = logger
+    }
+    
+    func get(
+        from url: URL,
+        completion: @escaping (HTTPClient.Result) -> Void
+    ) -> any EssentialFeed.HTTPClientTask {
+        logger.trace("Started loading url: \(url)")
+        
+        let startTime = CACurrentMediaTime()
+        return decoratee.get(from: url, completion: { [logger] result in
+            if case let .failure(error) = result {
+                logger.trace("Failed to load url: \(url): \(error.localizedDescription)")
+            }
+            let elapsedTime = CACurrentMediaTime() - startTime
+            logger.trace("Finished loading url: \(url) in \(elapsedTime) seconds")
+            
+            completion(result)
+        })
+    }
+}
