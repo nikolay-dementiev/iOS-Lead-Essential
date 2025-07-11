@@ -33,6 +33,7 @@ class LoaderSpy: FeedImageDataLoader {
                           return publisher.eraseToAnyPublisher()
                       })
         )
+        feedRequests[index].send(completion: .finished)
     }
     
     func completeFeedLoadingWithError(at index: Int = 0) {
@@ -57,6 +58,7 @@ class LoaderSpy: FeedImageDataLoader {
                           return publisher.eraseToAnyPublisher()
                       })
         )
+        loadMoreRequests[index].send(completion: .finished)
     }
     
     func completeLoadMoreWithError(at index: Int = 0) {
