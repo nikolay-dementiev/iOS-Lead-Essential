@@ -19,6 +19,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         .defaultDirectoryURL()
         .appendingPathComponent("feed-store.sqlite")
     
+    private lazy var scheduler: AnyDispatchQueueScheduler = DispatchQueue(
+        label: "infra.queue",
+        qos: .userInitiated,
+        attributes: .concurrent
+    ).eraseToAnyScheduler()
+    
     private lazy var navigationController = UINavigationController(
         rootViewController: FeedUIComposer.feedComposedWith(
             feedLoader: makeRemoteFeedLoaderWithLocalFallback,
@@ -50,10 +56,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         category: "main"
     )
     
-    convenience init(httpClient: HTTPClient, store: FeedStore & FeedImageDataStore) {
+    convenience init(
+        httpClient: HTTPClient,
+        store: FeedStore & FeedImageDataStore,
+        scheduler: AnyDispatchQueueScheduler
+    ) {
         self.init()
         self.httpClient = httpClient
         self.store = store
+        self.scheduler = scheduler
     }
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -166,6 +177,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 //                    .loadImageDataPublisher(from: url)
                     .caching(to: localImageLoader, using: url)
             })
+            .subscribe(on: scheduler)
+//            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
     }
 }
 
