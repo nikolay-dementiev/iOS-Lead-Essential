@@ -233,3 +233,91 @@ extension DispatchQueue {
 //        DispatchQueue.immediateWhenOnMainThreadScheduler.eraseToAnyScheduler()
 //    }
 //}
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+struct AnyScheduler<SchedulerTimeType: Strideable, SchedulerOptions>: Scheduler where SchedulerTimeType.Stride: SchedulerTimeIntervalConvertible {
+    
+    private let _now: () -> SchedulerTimeType
+    private let _minimumTolerance: () -> SchedulerTimeType.Stride
+    private let _scheduleOptions: (
+        SchedulerOptions?,
+        @escaping () -> Void
+    ) -> Void
+    private let _scheduleAfter: (
+        SchedulerTimeType,
+        SchedulerTimeType.Stride,
+        SchedulerOptions?,
+        @escaping () -> Void
+    ) -> Void
+    private let _scheduleAfterInterval: (
+        SchedulerTimeType,
+        SchedulerTimeType.Stride,
+        SchedulerTimeType.Stride,
+        SchedulerOptions?,
+        @escaping () -> Void
+    ) -> any Cancellable
+    
+    init<S>(_ scheduler: S) where SchedulerTimeType == S.SchedulerTimeType, SchedulerOptions == S.SchedulerOptions, S: Scheduler {
+        
+        _now = { scheduler.now }
+        _minimumTolerance = { scheduler.minimumTolerance }
+        _scheduleOptions = scheduler.schedule(options:_:)
+        _scheduleAfter = scheduler.schedule(after:tolerance:options:_:)
+        _scheduleAfterInterval = scheduler.schedule(after:interval:tolerance:options:_:)
+    }
+    
+    var now: SchedulerTimeType { _now() }
+    var minimumTolerance: SchedulerTimeType.Stride { _minimumTolerance() }
+    
+    func schedule(options: SchedulerOptions?, _ action: @escaping () -> Void) {
+        _scheduleOptions(options,action)
+    }
+    
+    func schedule(
+        after date: SchedulerTimeType,
+        tolerance: SchedulerTimeType.Stride,
+        options: SchedulerOptions?,
+        _ action: @escaping () -> Void
+    ) {
+        _scheduleAfter(date, tolerance, options, action)
+    }
+    
+    func schedule(
+        after date: SchedulerTimeType,
+        interval: SchedulerTimeType.Stride,
+        tolerance: SchedulerTimeType.Stride,
+        options: SchedulerOptions?,
+        _ action: @escaping () -> Void
+    ) -> any Cancellable {
+        _scheduleAfterInterval(date, interval, tolerance, options, action)
+    }
+}
+
+typealias AnyDispatchQueueScheduler = AnyScheduler<DispatchQueue.SchedulerTimeType, DispatchQueue.SchedulerOptions>
+
+extension AnyDispatchQueueScheduler {
+    static var immediateOnMainQueue: Self {
+        DispatchQueue.immediateWhenOnMainQueueScheduler.eraseToAnyScheduler()
+    }
+}
+
+extension Scheduler {
+    func eraseToAnyScheduler() -> AnyScheduler<SchedulerTimeType, SchedulerOptions> {
+        AnyScheduler(self)
+    }
+}
+
+
+//
+//@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+//extension AnyPublisher : Publisher {
+//
+//    /// Attaches the specified subscriber to this publisher.
+//    ///
+//    /// Implementations of ``Publisher`` must implement this method.
+//    ///
+//    /// The provided implementation of ``Publisher/subscribe(_:)-4u8kn``calls this method.
+//    ///
+//    /// - Parameter subscriber: The subscriber to attach to this ``Publisher``, after which it can receive values.
+//    @inlinable public func receive<S>(subscriber: S) where Output == S.Input, Failure == S.Failure, S : Subscriber
+//}
