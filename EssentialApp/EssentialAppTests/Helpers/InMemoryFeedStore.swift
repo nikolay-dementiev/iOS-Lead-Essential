@@ -20,7 +20,7 @@ class InMemoryFeedStore: FeedStore & FeedImageDataStore {
         completion(.success(()))
     }
     
-    func insert(_ feed: [LocalFeedImage], timeStamp timestamp: Date, completion: @escaping FeedStore.InsertionCompletion) {
+    func insert(_ feed: [LocalFeedImage], timestamp timestamp: Date, completion: @escaping FeedStore.InsertionCompletion) {
         feedCache = CachedFeed(feed: feed, timestamp: timestamp)
         completion(.success(()))
     }

@@ -16,7 +16,7 @@ extension CoreDataFeedStore: FeedStore {
     }
     
     public func insert(_ feed: [LocalFeedImage],
-                       timeStamp timestamp: Date,
+                       timestamp timestamp: Date,
                        completion: @escaping InsertionCompletion) {
         performAsync { context in
             completion(Result {

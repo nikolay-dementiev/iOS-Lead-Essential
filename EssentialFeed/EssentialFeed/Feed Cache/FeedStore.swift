@@ -29,7 +29,7 @@ public protocol FeedStore {
     /// The completion block can be invoked on any thread.
     /// Client is responsible for dispatching to appropriate thread if needed.
     @available(*, deprecated)
-    func insert(_ feed: [LocalFeedImage], timeStamp: Date, completion: @escaping InsertionCompletion)
+    func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion)
     
     /// The completion block can be invoked on any thread.
     /// Client is responsible for dispatching to appropriate thread if needed.
@@ -75,6 +75,8 @@ public extension FeedStore {
     }
 
     func deleteCachedFeed(completion: @escaping DeletionCompletion) {}
-    func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {}
+    func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
+        print("insert:"+#function)
+    }
     func retrieve(completion: @escaping RetrievalCompletion) {}
 }

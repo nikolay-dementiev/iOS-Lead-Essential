@@ -13,7 +13,7 @@ class NullStore: FeedStore & FeedImageDataStore {
     
     func insert(
         _ feed: [EssentialFeed.LocalFeedImage],
-        timeStamp: Date,
+        timestamp: Date,
         completion: @escaping InsertionCompletion
     ) {
         completion(.success(()))
