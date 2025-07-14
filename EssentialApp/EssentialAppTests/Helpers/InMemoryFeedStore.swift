@@ -7,28 +7,48 @@
 import Foundation
 import EssentialFeed
 
-class InMemoryFeedStore: FeedStore & FeedImageDataStore {
+class InMemoryFeedStore {
     private(set) var feedCache: CachedFeed?
     private var feedImageDataCache: [URL: Data] = [:]
     
     private init(feedCache: CachedFeed? = nil) {
         self.feedCache = feedCache
     }
-    
-    func deleteCachedFeed(completion: @escaping FeedStore.DeletionCompletion) {
+}
+
+extension InMemoryFeedStore: FeedStore {
+    /*
+     func deleteCachedFeed(completion: @escaping FeedStore.DeletionCompletion) {
+     feedCache = nil
+     completion(.success(()))
+     }
+     */
+    func deleteCachedFeed() throws {
         feedCache = nil
-        completion(.success(()))
     }
     
-    func insert(_ feed: [LocalFeedImage], timestamp timestamp: Date, completion: @escaping FeedStore.InsertionCompletion) {
+    /*
+     func insert(_ feed: [LocalFeedImage], timestamp timestamp: Date, completion: @escaping FeedStore.InsertionCompletion) {
+     feedCache = CachedFeed(feed: feed, timestamp: timestamp)
+     completion(.success(()))
+     }
+     */
+    func insert(_ feed: [LocalFeedImage], timestamp: Date) throws {
         feedCache = CachedFeed(feed: feed, timestamp: timestamp)
-        completion(.success(()))
     }
     
-    func retrieve(completion: @escaping FeedStore.RetrievalCompletion) {
-        completion(.success(feedCache))
+    /*
+     func retrieve(completion: @escaping FeedStore.RetrievalCompletion) {
+     completion(.success(feedCache))
+     }
+     */
+    func retrieve() throws -> CachedFeed? {
+        feedCache
     }
-    
+}
+
+extension InMemoryFeedStore: FeedImageDataStore {
+       
     func insert(_ data: Data, for url: URL) throws {
         feedImageDataCache[url] = data
     }
@@ -36,7 +56,9 @@ class InMemoryFeedStore: FeedStore & FeedImageDataStore {
     func retrieve(dataForURL url: URL) throws -> Data? {
         feedImageDataCache[url]
     }
-    
+}
+
+extension InMemoryFeedStore {
     static var empty: InMemoryFeedStore {
         InMemoryFeedStore()
     }
