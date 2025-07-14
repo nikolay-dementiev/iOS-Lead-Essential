@@ -5,6 +5,7 @@
 //
 
 extension CoreDataFeedStore: FeedStore {
+    /*
     public func retrieve(completion: @escaping RetrievalCompletion) {
         performAsync { context in
             completion(Result {
@@ -14,7 +15,18 @@ extension CoreDataFeedStore: FeedStore {
             })
         }
     }
+    */
+    public func retrieve() throws -> CachedFeed? {
+        try performSync { context in
+            Result {
+                try ManagedCache.find(in: context).map {
+                    CachedFeed(feed: $0.localFeed, timestamp: $0.timestamp)
+                }
+            }
+        }
+    }
     
+    /*
     public func insert(_ feed: [LocalFeedImage],
                        timestamp timestamp: Date,
                        completion: @escaping InsertionCompletion) {
@@ -31,7 +43,24 @@ extension CoreDataFeedStore: FeedStore {
             })
         }
     }
+    */
+    public func insert(_ feed: [LocalFeedImage],
+                       timestamp: Date) throws {
+        try performSync { context in
+            Result {
+                let managedCache = try ManagedCache.newUniqueInstance(in: context)
+                managedCache.timestamp = timestamp
+                managedCache.feed = ManagedFeedImage.images(from: feed, in: context)
+                
+                try context.save()
+            }.mapError {
+                context.rollback()
+                return $0
+            }
+        }
+    }
     
+    /*
     public func deleteCachedFeed(completion: @escaping DeletionCompletion) {
         performAsync { context in
             completion(Result {
@@ -40,6 +69,17 @@ extension CoreDataFeedStore: FeedStore {
                 context.rollback()
                 return $0
             })
+        }
+    }
+    */
+    public func deleteCachedFeed() throws {
+        try performSync { context in
+            Result {
+                try ManagedCache.deleteCache(in: context)
+            }.mapError {
+                context.rollback()
+                return $0
+            }
         }
     }
 }
