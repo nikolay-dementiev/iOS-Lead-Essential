@@ -17,12 +17,8 @@ extension CoreDataFeedStore: FeedStore {
     }
     */
     public func retrieve() throws -> CachedFeed? {
-        try performSync { context in
-            Result {
-                try ManagedCache.find(in: context).map {
-                    CachedFeed(feed: $0.localFeed, timestamp: $0.timestamp)
-                }
-            }
+        try ManagedCache.find(in: context).map {
+            CachedFeed(feed: $0.localFeed, timestamp: $0.timestamp)
         }
     }
     
@@ -46,17 +42,15 @@ extension CoreDataFeedStore: FeedStore {
     */
     public func insert(_ feed: [LocalFeedImage],
                        timestamp: Date) throws {
-        try performSync { context in
-            Result {
-                let managedCache = try ManagedCache.newUniqueInstance(in: context)
-                managedCache.timestamp = timestamp
-                managedCache.feed = ManagedFeedImage.images(from: feed, in: context)
-                
-                try context.save()
-            }.mapError {
-                context.rollback()
-                return $0
-            }
+        let managedCache = try ManagedCache.newUniqueInstance(in: context)
+        managedCache.timestamp = timestamp
+        managedCache.feed = ManagedFeedImage.images(from: feed, in: context)
+        
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            throw error
         }
     }
     
@@ -73,13 +67,11 @@ extension CoreDataFeedStore: FeedStore {
     }
     */
     public func deleteCachedFeed() throws {
-        try performSync { context in
-            Result {
-                try ManagedCache.deleteCache(in: context)
-            }.mapError {
-                context.rollback()
-                return $0
-            }
+        do {
+            try ManagedCache.deleteCache(in: context)
+        } catch {
+            context.rollback()
+            throw error
         }
     }
 }
