@@ -12,6 +12,8 @@ public protocol FeedStore {
     func insert(_ feed: [LocalFeedImage], timestamp: Date) throws
     func retrieve() throws -> CachedFeed?
     
+    /* ASYNC variation - doesn't uses anymore
+     
     typealias DeletionResult = Result<Void, Error>
     typealias DeletionCompletion = (DeletionResult) -> Void
     
@@ -35,8 +37,10 @@ public protocol FeedStore {
     /// Client is responsible for dispatching to appropriate thread if needed.
     @available(*, deprecated)
     func retrieve(completion: @escaping RetrievalCompletion)
+    */
 }
 
+/*
 public extension FeedStore {
     func deleteCachedFeed() throws {
         let group = DispatchGroup()
@@ -80,3 +84,4 @@ public extension FeedStore {
     }
     func retrieve(completion: @escaping RetrievalCompletion) {}
 }
+*/
