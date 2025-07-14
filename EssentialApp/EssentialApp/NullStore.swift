@@ -3,6 +3,8 @@
 //
 //  Created by Mykola Dementiev
 //
+
+/*
 import Foundation
 import EssentialFeed
 
@@ -24,3 +26,4 @@ extension NullStore: FeedImageDataStore {
         .none
     }
 }
+*/
