@@ -9,13 +9,13 @@
 
 #### Achievements:
 
-1. https://academy.essentialdeveloper.com/achievements/341ef910-9de2-48df-8351-329f810d69f4
-2. https://academy.essentialdeveloper.com/achievements/a71327d0-2c22-4b13-8b7d-c9cc63c1dddc
-3. https://academy.essentialdeveloper.com/achievements/88414477-65d9-4062-861c-913e1d47c07d
+- ![White belt 1st Stripe](./Resources/white-belt-1.pdf): https://academy.essentialdeveloper.com/achievements/341ef910-9de2-48df-8351-329f810d69f4
+- ![White belt 2nd Stripe](./Resources/white-belt-2.pdf): https://academy.essentialdeveloper.com/achievements/a71327d0-2c22-4b13-8b7d-c9cc63c1dddc
+- ![White belt 3rd Stripe](./Resources/white-belt-3.pdf): https://academy.essentialdeveloper.com/achievements/88414477-65d9-4062-861c-913e1d47c07d
+- ![White belt 4th Stripe](./Resources/white-belt-4.pdf): https://academy.essentialdeveloper.com/achievements/ab4f7ea8-ca5a-480e-8aa0-abc737c1a174
+- ![Blue belt](./Resources/blue-belt): https://academy.essentialdeveloper.com/achievements/8b13bb03-fd74-445b-9833-2bfc3faa5e13
+- ![Certificate of Completion](./Resources/certificate-of-completion.pdf): https://academy.essentialdeveloper.com/achievements/5b5d1439-d5d8-4d26-a477-4c7bc6eb54f5
 
-- ![1](./Resources/white-belt-1.pdf)
-- ![2](./Resources/white-belt-2.pdf)
-- ![3](./Resources/white-belt-3.pdf)
 
 
 ## Essential Feed App – Image Feed Feature
