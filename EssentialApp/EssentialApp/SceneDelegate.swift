@@ -19,6 +19,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         .defaultDirectoryURL()
         .appendingPathComponent("feed-store.sqlite")
     
+    private lazy var scheduler: AnyDispatchQueueScheduler = {
+        if let store = store as? CoreDataFeedStore {
+            return .scheduler(for: store)
+        }
+        
+        return DispatchQueue(
+            label: "com.essentialdeveloper.infra.queue",
+            qos: .userInitiated
+        ).eraseToAnyScheduler()
+    }()
+    
     private lazy var navigationController = UINavigationController(
         rootViewController: FeedUIComposer.feedComposedWith(
             feedLoader: makeRemoteFeedLoaderWithLocalFallback,
@@ -37,7 +48,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         } catch {
             assertionFailure("Failed to instantiate CoreData store with error: \(error.localizedDescription)")
             logger.fault("Failed to instantiate CoreData store with error: \(error.localizedDescription)")
-            return NullStore()
+            return InMemoryFeedStore()
         }
     }()
     
@@ -50,7 +61,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         category: "main"
     )
     
-    convenience init(httpClient: HTTPClient, store: FeedStore & FeedImageDataStore) {
+    convenience init(
+        httpClient: HTTPClient,
+        store: FeedStore & FeedImageDataStore
+    ) {
         self.init()
         self.httpClient = httpClient
         self.store = store
@@ -73,7 +87,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func sceneWillResignActive(_ scene: UIScene) {
-        localFeedLoader.validateCache { _ in }
+        scheduler.schedule { [localFeedLoader, logger] in
+            do {
+                try localFeedLoader.validateCache()
+            } catch {
+                logger.error("Failed to validate cache with error: \(error.localizedDescription)")
+            }
+        }
     }
     
     private func showComments(for image: FeedImage) {
@@ -97,9 +117,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     private func makeRemoteFeedLoaderWithLocalFallback() -> AnyPublisher<Paginated<FeedImage>, Error> {
         makeRemoteFeedLoader()
+            .receive(on: scheduler)
             .caching(to: localFeedLoader)
             .fallback(to: localFeedLoader.loadPublisher)
             .map(makeFirstPage)
+//            .subscribe(on: scheduler)
             .eraseToAnyPublisher()
     }
     
@@ -111,6 +133,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 (cachedItem + newItems, newItems.last)
             }
             .map(makePage)
+            .receive(on: scheduler)
          /*
             .delay(for: 2, scheduler: DispatchQueue.main)
             .flatMap { _ in
@@ -118,6 +141,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
          */
             .caching(to: localFeedLoader)
+//            .subscribe(on: scheduler)
             .eraseToAnyPublisher()
     }
     
@@ -146,15 +170,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private func makeLocalImageLoaderWithRemoteFallback(url: URL) -> FeedImageDataLoader.Publisher {
         //        let remoteImageLoader = RemoteFeedImageDataLoader(client: httpClient)
         
-//        let client = httpClient
-        let client = HTTPClientProfilingDecorator(
-            decoratee: httpClient,
-            logger: logger
-        )
+        let client = httpClient
+        /*
+         let client = HTTPClientProfilingDecorator(
+         decoratee: httpClient,
+         logger: logger
+         )
+         */
         
         let remoteImageLoader = client
             .getPublisher(url: url)
             .tryMap(FeedImageDataMapper.map)
+            .receive(on: scheduler)
         let localImageLoader = LocalFeedImageDataLoader(store: store)
         
         return localImageLoader
@@ -164,6 +191,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 //                    .loadImageDataPublisher(from: url)
                     .caching(to: localImageLoader, using: url)
             })
+        //            .subscribe(on: scheduler)
+            .eraseToAnyPublisher()
     }
 }
 

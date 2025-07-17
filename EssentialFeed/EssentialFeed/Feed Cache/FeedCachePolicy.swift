@@ -13,7 +13,7 @@ final class FeedCachePolicy {
     
     private init() {}
     
-    static func validate(_ timeStamp: Date, agains date: Date) -> Bool {
+    static func validate(_ timeStamp: Date, against date: Date) -> Bool {
         guard let maxCacheAge = calendar.date(byAdding: .day, value: maxCacheAgeInDays, to: timeStamp) else {
             return false
         }

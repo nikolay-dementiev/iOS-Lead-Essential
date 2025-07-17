@@ -564,7 +564,7 @@ class FeedUIIntegrationTests: XCTestCase {
     
     private func makeSUT(
         selection: @escaping (FeedImage) -> Void = { _ in },
-        file: StaticString = #file,
+        file: StaticString = #filePath,
         line: UInt = #line
     ) -> (sut: ListViewController, loader: LoaderSpy) {
         let loader = LoaderSpy()

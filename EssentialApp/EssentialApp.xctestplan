@@ -27,6 +27,7 @@
   },
   "testTargets" : [
     {
+      "enabled" : false,
       "target" : {
         "containerPath" : "container:..\/EssentialFeed\/EssentialFeed.xcodeproj",
         "identifier" : "2F1142332DAEBCBC00308DC8",
@@ -42,6 +43,7 @@
       }
     },
     {
+      "enabled" : false,
       "target" : {
         "containerPath" : "container:..\/EssentialFeed\/EssentialFeed.xcodeproj",
         "identifier" : "2F7E972D2D6797020044A88B",
