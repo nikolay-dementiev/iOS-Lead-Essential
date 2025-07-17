@@ -3,38 +3,27 @@
 //
 //  Created by Mykola Dementiev
 //
+
+/*
 import Foundation
 import EssentialFeed
 
-class NullStore: FeedStore & FeedImageDataStore {
-    func deleteCachedFeed(completion: @escaping DeletionCompletion) {
-        completion(.success(()))
-    }
+class NullStore {}
+
+extension NullStore: FeedStore  {
+    func deleteCachedFeed() throws {}
+
+    func insert(_ feed: [LocalFeedImage], timestamp: Date) throws {}
+
+    func retrieve() throws -> CachedFeed? { .none }
+}
+
+extension NullStore: FeedImageDataStore {
     
-    func insert(
-        _ feed: [EssentialFeed.LocalFeedImage],
-        timeStamp: Date,
-        completion: @escaping InsertionCompletion
-    ) {
-        completion(.success(()))
-    }
+    func insert(_ data: Data, for url: URL) throws {}
     
-    func retrieve(completion: @escaping RetrievalCompletion) {
-        completion(.success(.none))
-    }
-    
-    func insert(
-        _ data: Data,
-        for url: URL,
-        completion: @escaping (InsertionResult) -> Void
-    ) {
-        completion(.success(()))
-    }
-    
-    func retrieve(
-        dataForURL url: URL,
-        completion: @escaping (RetrievalResult) -> Void
-    ) {
-        completion(.success(.none))
+    func retrieve(dataForURL url: URL) throws -> Data? {
+        .none
     }
 }
+*/
